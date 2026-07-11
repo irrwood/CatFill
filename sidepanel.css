@@ -1,0 +1,727 @@
+:root {
+  color-scheme: light;
+  --cream: #fdfcfb;
+  --stone: #f5f3f0;
+  --sand: #faf9f7;
+  --border: #e9e3dc;
+  --ink: #121212;
+  --heading: #343433;
+  --body: #474645;
+  --muted: #7e7e7d;
+  --accent: #9b7348;
+  --blue: #0086fc;
+  --honey: #ffbb26;
+  --danger: #8a5a2f;
+  --surface: #fff;
+  --input: #fff;
+  --topbar: rgba(255, 255, 255, 0.96);
+  --shadow: rgba(88, 62, 33, 0.10);
+  --success: #08723f;
+  --suggestion-bg: #121212;
+  --suggestion-text: #fdfcfb;
+  --suggestion-muted: rgba(251, 250, 249, 0.72);
+  --suggestion-line: rgba(251, 250, 249, 0.28);
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --cream: #191817;
+  --stone: #2b2825;
+  --sand: #24211f;
+  --border: #403a35;
+  --ink: #f4f0ea;
+  --heading: #eee9e2;
+  --body: #d7d0c8;
+  --muted: #aaa29a;
+  --accent: #d2ae7a;
+  --blue: #72b8ff;
+  --honey: #efb73d;
+  --danger: #e3bd8f;
+  --surface: #211f1d;
+  --input: #2a2724;
+  --topbar: rgba(28, 26, 24, 0.96);
+  --shadow: rgba(0, 0, 0, 0.3);
+  --success: #83d2a5;
+  --suggestion-bg: #332c25;
+  --suggestion-text: #f8f1e8;
+  --suggestion-muted: #d4c7b9;
+  --suggestion-line: #665a4d;
+}
+
+* { box-sizing: border-box; }
+
+html {
+  scrollbar-gutter: stable;
+}
+
+body {
+  margin: 0;
+  min-width: 360px;
+  overflow-y: scroll;
+  font: 14px/1.45 Inter, -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+  color: var(--heading);
+  background: var(--cream);
+}
+
+h1, h2, h3, p { margin: 0; }
+
+button,
+select,
+input,
+textarea {
+  font: inherit;
+}
+
+button {
+  border: 0;
+  cursor: pointer;
+}
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  min-height: 44px;
+  padding: 6px 12px;
+  background: var(--topbar);
+  border-bottom: 1px solid var(--stone);
+}
+
+.topMain {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  min-height: 32px;
+}
+
+.brandBlock {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+h1 {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 18px;
+  line-height: 1.08;
+  letter-spacing: 0;
+}
+
+h1 img {
+  width: 22px;
+  height: 22px;
+  border-radius: 5px;
+}
+
+/* 黑色线稿 logo 在夜间模式下反色成白色 */
+:root[data-theme="dark"] h1 img {
+  filter: invert(1);
+}
+
+.topbar p,
+.profileControl span,
+label,
+.empty,
+.status,
+.count {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+main {
+  display: grid;
+  gap: 12px;
+  padding: 10px 16px 24px;
+}
+
+.workspaceBar {
+  display: grid;
+  gap: 12px;
+  padding: 12px;
+  background: var(--surface);
+  border-radius: 10px;
+  box-shadow: inset 0 0 0 1px var(--stone);
+}
+
+.profileControl {
+  display: grid;
+  gap: 6px;
+}
+
+.tabs {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 4px;
+  padding: 4px;
+  background: var(--stone);
+  border-radius: 10px;
+  box-shadow: inset 0 0 0 1px var(--border);
+}
+
+.tabButton {
+  min-width: 0;
+  min-height: 34px;
+  padding: 7px 6px;
+  color: var(--muted);
+  background: transparent;
+  border-radius: 7px;
+  font-size: 12px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.tabButton.active {
+  color: var(--ink);
+  background: var(--surface);
+  box-shadow: 0 1px 4px var(--shadow);
+}
+
+.tabPanel {
+  display: grid;
+  gap: 12px;
+}
+
+.settingsCard,
+.manualCard {
+  display: grid;
+  gap: 12px;
+  padding: 13px;
+  background: var(--surface);
+  border-radius: 10px;
+  box-shadow: inset 0 0 0 1px var(--stone);
+}
+
+.settingsHeader,
+.manualHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.settingsHeader h2,
+.manualHeader h2 {
+  margin-top: 3px;
+  color: var(--heading);
+  font-size: 16px;
+}
+
+.settingsGrid,
+.manualForm {
+  display: grid;
+  gap: 10px;
+}
+
+.toggleRow {
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 11px;
+  background: var(--sand);
+  border-radius: 8px;
+  box-shadow: inset 0 0 0 1px var(--stone);
+}
+
+.toggleRow strong {
+  display: block;
+  color: var(--heading);
+  font-size: 13px;
+}
+
+.toggleRow small {
+  display: block;
+  margin-top: 3px;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.35;
+}
+
+.toggleRow input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  box-shadow: none;
+  accent-color: var(--ink);
+}
+
+.manualForm .primary {
+  justify-self: stretch;
+  min-height: 38px;
+}
+
+.documentImport {
+  display: grid;
+  gap: 9px;
+  padding-top: 12px;
+  border-top: 1px solid var(--stone);
+}
+
+.documentDropzone {
+  display: grid;
+  min-height: 96px;
+  place-items: center;
+  align-content: center;
+  gap: 5px;
+  padding: 12px;
+  color: var(--muted);
+  background: var(--sand);
+  border: 1px dashed var(--border);
+  border-radius: 8px;
+  cursor: pointer;
+  text-align: center;
+}
+
+.documentDropzone input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.documentDropzone svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.8;
+}
+
+.documentDropzone.dragOver,
+.documentDropzone:hover,
+.documentDropzone:focus-visible {
+  color: var(--heading);
+  background: var(--surface);
+  border-color: var(--accent);
+  outline: 0;
+}
+
+.documentDropzone.hasFile {
+  color: var(--heading);
+  background: var(--surface);
+  border-style: solid;
+}
+
+.documentDropLabel {
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.documentActions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.documentFileName {
+  max-width: 100%;
+  overflow: hidden;
+  color: var(--muted);
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.providerHint {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.topActions,
+.suggestionActions,
+.formActions,
+.entryActions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.topActions {
+  flex: 0 0 auto;
+  justify-content: flex-end;
+}
+
+.primary,
+.ghostButton,
+.toolButton,
+.ghost,
+.iconButton {
+  border-radius: 999px;
+  padding: 6px 11px;
+  font-weight: 700;
+}
+
+.primary {
+  color: var(--cream);
+  background: var(--ink);
+}
+
+.actionStatusButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 32px;
+}
+
+.actionStatusButton svg {
+  display: none;
+  width: 15px;
+  height: 15px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.actionStatusButton.loading .spinIcon {
+  display: block;
+  animation: refreshSpin 700ms linear infinite;
+}
+
+.actionStatusButton.done .doneIcon {
+  display: block;
+}
+
+.ghostButton,
+.ghost,
+.toolButton,
+.iconButton {
+  color: var(--heading);
+  background: var(--sand);
+  box-shadow: inset 0 0 0 1px var(--stone);
+}
+
+.iconButton {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+}
+
+.iconButton svg {
+  width: 17px;
+  height: 17px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+#refreshBtn svg {
+  grid-area: 1 / 1;
+  transition: opacity 140ms ease, transform 180ms ease;
+}
+
+#refreshBtn .checkIcon {
+  opacity: 0;
+  transform: scale(0.72);
+}
+
+#refreshBtn.refreshing .refreshIcon {
+  animation: refreshSpin 700ms linear infinite;
+}
+
+#refreshBtn.done .refreshIcon {
+  opacity: 0;
+  transform: scale(0.72);
+}
+
+#refreshBtn.done .checkIcon {
+  opacity: 1;
+  transform: scale(1);
+}
+
+@keyframes refreshSpin {
+  to { transform: rotate(360deg); }
+}
+
+.toolButton {
+  padding: 6px 10px;
+  font-size: 12px;
+}
+
+.toolButton.danger {
+  color: var(--danger);
+  background: var(--surface);
+}
+
+.iconButton.danger {
+  color: var(--danger);
+  background: var(--surface);
+}
+
+select {
+  appearance: none;
+}
+
+select,
+input,
+textarea {
+  width: 100%;
+  padding: 10px 11px;
+  color: var(--heading);
+  background: var(--input);
+  border: 0;
+  border-radius: 8px;
+  box-shadow: inset 0 0 0 1px var(--border);
+}
+
+textarea {
+  resize: vertical;
+  min-height: 72px;
+}
+
+.status {
+  position: absolute;
+  right: 12px;
+  bottom: -18px;
+  max-width: calc(100% - 24px);
+  min-height: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.status.err { color: var(--danger); }
+.status.ok { color: var(--success); }
+
+.suggestion {
+  display: grid;
+  gap: 12px;
+  padding: 14px;
+  background: var(--suggestion-bg);
+  color: var(--suggestion-text);
+  border-radius: 12px;
+}
+
+.suggestion h2 {
+  font-size: 17px;
+  margin: 3px 0 4px;
+}
+
+.suggestion p {
+  color: var(--suggestion-muted);
+  font-size: 13px;
+}
+
+.suggestion .ghost {
+  color: var(--suggestion-text);
+  background: transparent;
+  box-shadow: inset 0 0 0 1px var(--suggestion-line);
+}
+
+.suggestion .primary {
+  color: var(--suggestion-bg);
+  background: var(--suggestion-text);
+}
+
+.groups {
+  display: grid;
+  gap: 18px;
+}
+
+.group {
+  display: grid;
+  gap: 7px;
+}
+
+.groupEntries {
+  overflow: hidden;
+  background: var(--surface);
+  border-radius: 8px;
+  box-shadow: inset 0 0 0 1px var(--stone);
+}
+
+.groupHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 28px;
+  padding: 0 2px;
+}
+
+.groupHeader h2 {
+  color: var(--accent);
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.entry {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 8px 10px;
+  padding: 11px 12px;
+  background: transparent;
+}
+
+.entryFields {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.entryKeyLabel {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.entryFields input {
+  height: 36px;
+  padding: 8px 10px;
+  color: var(--heading);
+  background: var(--sand);
+  box-shadow: inset 0 0 0 1px var(--stone);
+  font-size: 14px;
+  font-weight: 450;
+}
+
+.entry:not(.editing) .entryFields input[name="value"] {
+  cursor: default;
+}
+
+.entry.editing .entryFields input {
+  color: var(--ink);
+  background: var(--input);
+  box-shadow: inset 0 0 0 1px var(--border);
+}
+
+.entry.editing .entryFields input[name="canonicalKey"] {
+  height: 30px;
+  padding: 6px 9px;
+  font-size: 13px;
+}
+
+.entry.editing {
+  grid-template-columns: minmax(0, 1fr);
+  padding: 14px 12px 16px;
+}
+
+.entry.editing .entryFields {
+  grid-column: 1;
+  grid-row: 1;
+  gap: 10px;
+  padding-right: 116px;
+}
+
+.entry.editing .entryActions {
+  grid-column: 1;
+  grid-row: 1;
+  align-self: start;
+  justify-self: end;
+}
+
+.entryEditDetails {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 12px;
+  padding-top: 6px;
+  grid-column: 1 / -1;
+}
+
+.entryEditDetails label {
+  min-width: 0;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.entryEditDetails select,
+.entryEditDetails textarea {
+  margin-top: 4px;
+  padding: 8px 10px;
+  font-size: 13px;
+}
+
+.entryEditDetails textarea {
+  min-height: 88px;
+}
+
+.questionTag {
+  display: inline-block;
+  max-width: 100%;
+  margin-top: 6px;
+  padding: 4px 8px;
+  color: var(--muted);
+  background: var(--sand);
+  border-radius: 999px;
+  font-size: 11px;
+  line-height: 1.3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  vertical-align: top;
+  white-space: nowrap;
+}
+
+.entryMeta {
+  display: flex;
+}
+
+.aliases {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.alias,
+.badge {
+  border-radius: 999px;
+  padding: 4px 8px;
+  font-size: 12px;
+}
+
+.alias {
+  color: var(--body);
+  background: var(--sand);
+}
+
+.badge {
+  color: var(--ink);
+  background: var(--honey);
+}
+
+.fileBadge {
+  background: var(--sand);
+  color: var(--muted);
+}
+
+.entryActions {
+  justify-content: flex-end;
+  align-self: end;
+  min-height: 36px;
+  padding: 0;
+}
+
+label {
+  display: grid;
+  gap: 5px;
+}
+
+.eyebrow {
+  color: var(--honey);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.empty {
+  padding: 28px 16px;
+  text-align: center;
+  background: var(--surface);
+  border-radius: 10px;
+  box-shadow: inset 0 0 0 1px var(--stone);
+}
+
+.hidden { display: none; }

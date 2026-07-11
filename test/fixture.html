@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <title>CatFill 冒烟测试表单</title>
+  <style>
+    body { font-family: sans-serif; max-width: 640px; margin: 30px auto; }
+    .form-group, .q { margin: 14px 0; }
+    label, .qt { display: block; font-weight: 600; margin-bottom: 4px; }
+    input, textarea, select { padding: 6px; width: 320px; }
+    .note { font-size: 12px; color: #888; }
+    .pill { border: 1px solid #aaa; border-radius: 16px; padding: 6px 14px; background: #fff; cursor: pointer; }
+    .pill.is-selected { background: #cde; }
+    [contenteditable] { border: 1px solid #ccc; min-height: 60px; padding: 6px; width: 320px; }
+    table td, table th { padding: 6px; border: 1px solid #eee; text-align: left; }
+    #log { margin-top: 24px; font-size: 12px; color: #060; white-space: pre-line; }
+  </style>
+</head>
+<body>
+  <h1>示例求职申请表</h1>
+
+  <!-- 标准 label[for] -->
+  <div class="form-group">
+    <label for="fullname">姓名</label>
+    <input id="fullname" name="full_name" autocomplete="name" />
+  </div>
+
+  <!-- 就近文本（无 label 关联，机器生成 id）-->
+  <div class="q">
+    <div class="qt">您的电子邮箱是什么？</div>
+    <div><input id="field_8f3a91c2" name="q_29381" placeholder="" /></div>
+  </div>
+
+  <!-- note 格式要求 -->
+  <div class="form-group">
+    <label for="phone">Phone</label>
+    <input id="phone" name="phone" type="tel" />
+    <div class="note">Please include country code, digits only, no spaces (e.g. 8613800138000)</div>
+  </div>
+
+  <!-- 表格布局 -->
+  <table>
+    <tr><th>所在城市</th><td><input name="tbl_city" /></td></tr>
+    <tr><th>邮政编码</th><td><input name="tbl_zip" /></td></tr>
+  </table>
+
+  <!-- select 语义匹配 -->
+  <div class="form-group">
+    <label for="country">Country of residence</label>
+    <select id="country" name="country">
+      <option value="">Please select...</option>
+      <option value="us">United States (+1)</option>
+      <option value="cn">China (+86)</option>
+      <option value="jp">Japan (+81)</option>
+    </select>
+  </div>
+
+  <!-- radio 完整问题 -->
+  <fieldset style="border:none;padding:0">
+    <legend class="qt">Will you now or in the future require visa sponsorship for employment?</legend>
+    <label><input type="radio" name="visa" value="yes" /> Yes</label>
+    <label><input type="radio" name="visa" value="no" /> No</label>
+  </fieldset>
+
+  <!-- 自定义按钮组（无原生控件）-->
+  <div class="q" id="notice-group">
+    <div class="qt">How did you hear about this position?</div>
+    <div>
+      <button type="button" class="pill">LinkedIn</button>
+      <button type="button" class="pill">朋友推荐</button>
+      <button type="button" class="pill">公司官网</button>
+    </div>
+  </div>
+
+  <!-- contenteditable 富文本 -->
+  <div class="q">
+    <div class="qt">请简单介绍一下你自己（开放问题）</div>
+    <div contenteditable="true" data-placeholder="写点什么…"></div>
+  </div>
+
+  <!-- React 受控组件模拟：外部直接改 value 不会更新内部 state，必须靠 input 事件 -->
+  <div class="form-group">
+    <label for="react-like">受控组件（公司名）</label>
+    <input id="react-like" name="company" />
+  </div>
+
+  <!-- 弹层式可搜索下拉框（模拟 react-select：选项点开才渲染，监听 mousedown）-->
+  <div class="q">
+    <div class="qt">最高学历</div>
+    <div id="combo" style="position:relative;width:320px">
+      <input id="combo-input" role="combobox" aria-autocomplete="list" aria-expanded="false"
+             placeholder="点击选择…" autocomplete="off" />
+      <div id="combo-menu" style="display:none;position:absolute;background:#fff;border:1px solid #ccc;width:100%;z-index:9"></div>
+    </div>
+  </div>
+
+  <!-- readonly 弹层日期框（模拟老式 jQuery datepicker）-->
+  <div class="form-group">
+    <label for="start-date">期望入职日期</label>
+    <input id="start-date" name="start_date" readonly placeholder="YYYY-MM-DD" />
+  </div>
+
+  <!-- Shadow DOM -->
+  <div id="shadow-host"></div>
+
+  <div id="log"></div>
+
+  <script>
+    const log = (m) => (document.getElementById("log").textContent += m + "\n");
+
+    // 受控组件模拟：只认 input 事件里的值
+    const controlled = document.getElementById("react-like");
+    let internal = "";
+    controlled.addEventListener("input", (e) => { internal = e.target.value; log("受控组件收到 input：" + internal); });
+    controlled.addEventListener("change", () => { if (controlled.value !== internal) { controlled.value = internal; log("受控组件回滚了外部赋值！"); } });
+
+    // Shadow DOM 字段
+    const host = document.getElementById("shadow-host");
+    const root = host.attachShadow({ mode: "open" });
+    root.innerHTML = `
+      <div class="form-group">
+        <label for="sd-title">职位名称（在 shadow DOM 里）</label>
+        <input id="sd-title" name="job_title" />
+      </div>`;
+
+    // 自定义按钮组选中态
+    document.querySelectorAll(".pill").forEach((b) =>
+      b.addEventListener("click", () => {
+        b.parentElement.querySelectorAll(".pill").forEach((x) => x.classList.remove("is-selected"));
+        b.classList.add("is-selected");
+        log("按钮组选中：" + b.textContent);
+      }));
+
+    document.querySelector("[contenteditable]").addEventListener("input", (e) => log("富文本 input：" + e.target.innerText.slice(0, 40)));
+
+    // 可搜索下拉框：选项只在打开后渲染进 DOM，选中靠 mousedown（模拟 react-select）
+    const comboInput = document.getElementById("combo-input");
+    const comboMenu = document.getElementById("combo-menu");
+    const DEGREES = ["高中及以下", "大专", "本科", "硕士研究生", "博士研究生"];
+    function renderMenu(filter) {
+      comboMenu.innerHTML = "";
+      DEGREES.filter((d) => !filter || d.includes(filter)).forEach((d) => {
+        const opt = document.createElement("div");
+        opt.setAttribute("role", "option");
+        opt.textContent = d;
+        opt.style.cssText = "padding:6px;cursor:pointer";
+        opt.addEventListener("mousedown", () => {
+          comboInput.value = d;
+          comboMenu.style.display = "none";
+          comboInput.setAttribute("aria-expanded", "false");
+          log("下拉框选中：" + d);
+        });
+        comboMenu.appendChild(opt);
+      });
+      comboMenu.style.display = comboMenu.children.length ? "block" : "none";
+    }
+    comboInput.addEventListener("mousedown", () => {
+      comboInput.setAttribute("aria-expanded", "true");
+      renderMenu("");
+    });
+    comboInput.addEventListener("input", () => renderMenu(comboInput.value));
+
+    // readonly 日期框：只有弹层能改值；外部若临时解除 readonly 直接赋值也认
+    const dateInput = document.getElementById("start-date");
+    dateInput.addEventListener("change", () => log("日期框 change：" + dateInput.value));
+    dateInput.addEventListener("click", () => {
+      if (dateInput.readOnly) log("日期框被点击（真实场景这里会弹日历）");
+    });
+  </script>
+</body>
+</html>
