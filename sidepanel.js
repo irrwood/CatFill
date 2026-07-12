@@ -24,6 +24,7 @@ const AI_PROVIDERS = {
     name: "Anthropic Claude",
     keyLabel: "Anthropic API Key",
     keyPlaceholder: "sk-ant-...",
+    keyUrl: "https://platform.claude.com/settings/keys",
     defaultModel: "claude-opus-4-8",
     models: ["claude-opus-4-8", "claude-sonnet-4-5", "claude-haiku-4-5"],
     hint: { zh: "从 platform.claude.com 获取 API Key。", en: "Get an API key from platform.claude.com." },
@@ -32,6 +33,7 @@ const AI_PROVIDERS = {
     name: "DeepSeek",
     keyLabel: "DeepSeek API Key",
     keyPlaceholder: "sk-...",
+    keyUrl: "https://platform.deepseek.com/api_keys",
     defaultModel: "deepseek-chat",
     models: ["deepseek-chat", "deepseek-reasoner"],
     hint: { zh: "使用 DeepSeek 官方 OpenAI 兼容接口。", en: "Uses DeepSeek's official OpenAI-compatible API." },
@@ -40,6 +42,7 @@ const AI_PROVIDERS = {
     name: "OpenAI",
     keyLabel: "OpenAI API Key",
     keyPlaceholder: "sk-proj-...",
+    keyUrl: "https://platform.openai.com/api-keys",
     defaultModel: "gpt-4o-mini",
     models: ["gpt-4o-mini", "gpt-4o", "gpt-4.1-mini"],
     hint: { zh: "使用 OpenAI Chat Completions API。", en: "Uses the OpenAI Chat Completions API." },
@@ -48,6 +51,7 @@ const AI_PROVIDERS = {
     name: "Google Gemini",
     keyLabel: "Gemini API Key",
     keyPlaceholder: "AIza...",
+    keyUrl: "https://aistudio.google.com/app/apikey",
     defaultModel: "gemini-2.5-flash",
     models: ["gemini-2.5-flash", "gemini-2.5-pro", "gemini-1.5-flash"],
     hint: { zh: "从 Google AI Studio 获取 API Key。", en: "Get an API key from Google AI Studio." },
@@ -56,6 +60,7 @@ const AI_PROVIDERS = {
     name: "OpenRouter",
     keyLabel: "OpenRouter API Key",
     keyPlaceholder: "sk-or-...",
+    keyUrl: "https://openrouter.ai/settings/keys",
     defaultModel: "openai/gpt-4o-mini",
     models: ["openai/gpt-4o-mini", "anthropic/claude-sonnet-4", "google/gemini-2.5-flash"],
     hint: { zh: "通过 OpenRouter 调用多家模型。", en: "Use OpenRouter to access multiple models." },
@@ -64,6 +69,7 @@ const AI_PROVIDERS = {
     name: "Groq",
     keyLabel: "Groq API Key",
     keyPlaceholder: "gsk_...",
+    keyUrl: "https://console.groq.com/keys",
     defaultModel: "llama-3.3-70b-versatile",
     models: ["llama-3.3-70b-versatile", "llama-3.1-8b-instant", "openai/gpt-oss-120b"],
     hint: { zh: "使用 Groq OpenAI 兼容接口。", en: "Uses Groq's OpenAI-compatible API." },
@@ -72,6 +78,7 @@ const AI_PROVIDERS = {
     name: "Mistral AI",
     keyLabel: "Mistral API Key",
     keyPlaceholder: "...",
+    keyUrl: "https://console.mistral.ai/api-keys/",
     defaultModel: "mistral-large-latest",
     models: ["mistral-large-latest", "mistral-small-latest", "codestral-latest"],
     hint: { zh: "使用 Mistral Chat Completions API。", en: "Uses the Mistral Chat Completions API." },
@@ -187,6 +194,10 @@ function renderSettings() {
   $("aiInstruction").value = state.settings.aiInstruction || "";
   $("language").value = state.settings.language;
   $("theme").value = state.settings.theme;
+  const hasApiKey = Boolean(state.settings.apiKeys?.[providerId]?.trim());
+  $("aiSetupGuide").classList.toggle("hidden", hasApiKey);
+  $("setupProviderStep").textContent = i18n.t("setupProviderStep", { provider: provider.name });
+  $("getApiKeyLink").href = provider.keyUrl;
   $("providerHint").textContent = i18n.t("apiKeyLocal", { provider: provider.name, hint: provider.hint[i18n.locale] || provider.hint.zh });
 
   const list = $("modelOptions");
@@ -786,6 +797,11 @@ $("theme").onchange = async () => {
   state.settings.theme = $("theme").value;
   i18n.setTheme(state.settings.theme);
   await chrome.storage.local.set({ settings: state.settings });
+};
+
+$("startApiSetupBtn").onclick = () => {
+  $("apiKey").scrollIntoView({ behavior: "smooth", block: "center" });
+  setTimeout(() => $("apiKey").focus(), 220);
 };
 
 $("saveSettingsBtn").onclick = async () => {

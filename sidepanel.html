@@ -124,6 +124,40 @@
           </div>
           <button id="saveSettingsBtn" class="ghostButton" data-i18n="save">保存</button>
         </div>
+        <section id="aiSetupGuide" class="aiSetupGuide" aria-labelledby="aiSetupTitle">
+          <div class="setupGuideIntro">
+            <span class="eyebrow" data-i18n="setupEyebrow">开启 AI 功能</span>
+            <h3 id="aiSetupTitle" data-i18n="setupTitle">让 CatFill 读懂复杂表单</h3>
+            <p data-i18n="setupIntro">使用你自己的 API Key，获得更准确的语义判断和格式转换。</p>
+          </div>
+          <ul class="setupBenefits">
+            <li>
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 1.2 3.8L17 8l-3.8 1.2L12 13l-1.2-3.8L7 8l3.8-1.2L12 3Z" /><path d="m18 14 .7 2.3L21 17l-2.3.7L18 20l-.7-2.3L15 17l2.3-.7L18 14Z" /></svg>
+              <span><strong data-i18n="setupSemanticTitle">理解复杂问题</strong><small data-i18n="setupSemanticText">识别换种问法的字段和选择题语义。</small></span>
+            </li>
+            <li>
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h2M10 17h10" /><circle cx="16" cy="7" r="2" /><circle cx="8" cy="17" r="2" /></svg>
+              <span><strong data-i18n="setupFormatTitle">按要求转换格式</strong><small data-i18n="setupFormatText">处理姓名拆分、电话国家码和日期格式。</small></span>
+            </li>
+            <li>
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h8l4 4v14H6V3Z" /><path d="M14 3v5h5M9 13h6M9 17h4" /></svg>
+              <span><strong data-i18n="setupFilesTitle">整理资料与文件</strong><small data-i18n="setupFilesText">合并重复字段，并从文档或图片提取资料。</small></span>
+            </li>
+          </ul>
+          <ol class="setupSteps" data-i18n-title="setupStepsLabel">
+            <li><span>1</span><p id="setupProviderStep"></p></li>
+            <li><span>2</span><p data-i18n="setupCreateStep">在官方控制台创建 API Key</p></li>
+            <li><span>3</span><p data-i18n="setupPasteStep">粘贴到下方并保存</p></li>
+          </ol>
+          <div class="setupGuideActions">
+            <a id="getApiKeyLink" class="ghostButton" target="_blank" rel="noreferrer" data-i18n="getApiKey">获取 API Key</a>
+            <button id="startApiSetupBtn" class="primary" type="button" data-i18n="enterApiKey">填写 API Key</button>
+          </div>
+          <p class="setupPrivacy">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10" width="14" height="10" rx="2" /><path d="M8 10V7a4 4 0 0 1 8 0v3" /></svg>
+            <span data-i18n="setupPrivacy">Key 只保存在本机；仅在你使用 AI 功能时直接发送给所选服务商。</span>
+          </p>
+        </section>
         <div class="settingsGrid">
           <label><span data-i18n="provider">AI 供应商</span>
             <select id="provider"></select>
