@@ -100,11 +100,6 @@ h1 img {
   border-radius: 10px;
 }
 
-/* 黑色线稿 logo 在夜间模式下反色成白色 */
-:root[data-theme="dark"] h1 img {
-  filter: invert(1);
-}
-
 .roundIcon,
 .squareIcon {
   display: grid;

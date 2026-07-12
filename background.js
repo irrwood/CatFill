@@ -657,37 +657,3 @@ chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
     return true;
   }
 });
-
-// ---------- 工具栏图标跟随系统深浅色 ----------
-// 深色工具栏配白色图标，浅色配黑色。service worker 里没有 matchMedia，
-// 用 offscreen document 监听 prefers-color-scheme 并回报。
-const TOOLBAR_ICONS = {
-  light: { 16: "icons/icon16.png", 48: "icons/icon48.png", 128: "icons/icon128.png" },
-  dark: { 16: "icons/icon16-white.png", 48: "icons/icon48-white.png", 128: "icons/icon128-white.png" },
-};
-
-function applyToolbarIcon(dark) {
-  chrome.action?.setIcon({ path: TOOLBAR_ICONS[dark ? "dark" : "light"] })?.catch?.(() => {});
-}
-
-async function ensureThemeWatcher() {
-  if (!chrome.offscreen) return; // 旧版 Chrome（<109）：保持默认黑色图标
-  try {
-    if (await chrome.offscreen.hasDocument()) return;
-    await chrome.offscreen.createDocument({
-      url: "offscreen.html",
-      reasons: ["MATCH_MEDIA"],
-      justification: "监听系统深浅色以切换工具栏图标颜色",
-    });
-  } catch (e) {
-    // 并发创建时的 "single offscreen document" 报错可忽略
-  }
-}
-
-chrome.runtime.onMessage.addListener((msg) => {
-  if (msg.action === "systemThemeChanged") applyToolbarIcon(Boolean(msg.dark));
-});
-
-chrome.runtime.onInstalled?.addListener(ensureThemeWatcher);
-chrome.runtime.onStartup?.addListener(ensureThemeWatcher);
-ensureThemeWatcher();
