@@ -1,8 +1,8 @@
 {
   "extensionName": {
-    "message": "CatFill: Autofill Forms with AI"
+    "message": "CatFill: AI Form Autofill"
   },
   "extensionDescription": {
-    "message": "Learn form details locally and fill similar forms in one click. Optionally use your own AI API for complex fields and documents."
+    "message": "Autofill forms instantly using your saved information and optional AI. Your personal data stays private and stored locally."
   }
 }

@@ -1,4 +1,4 @@
-# CatFill: Autofill Forms with AI
+# CatFill: AI Form Autofill
 
 扫描并保存网页表单里填过的内容，下次遇到类似表单一键填充。支持多个联系人资料，可选接入 DeepSeek、Claude、OpenAI、Gemini 等 API 做 AI 智能填充。
 

@@ -2,15 +2,15 @@
 
 ## Identity
 
-- Name: CatFill: Autofill Forms with AI
-- Version: 0.2.0
+- Name: CatFill: AI Form Autofill
+- Version: 0.2.4
 - Category: Productivity
 - Single purpose: Save user-approved form information locally and fill similar web forms on the user's command.
 - Privacy policy URL: Publish `PRIVACY.md` at a public HTTPS URL before submission. Replace this line with that final URL.
 
 ## Short Description
 
-本地学习常用资料，一键填写相似网页表单；可选使用你的 AI API 理解复杂字段、整理资料和提取文件内容。
+Autofill forms instantly using your saved information and optional AI. Your personal data stays private and stored locally.
 
 ## Detailed Description
 
