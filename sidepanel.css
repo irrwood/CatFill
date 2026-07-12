@@ -204,6 +204,13 @@ main {
   font-size: 16px;
 }
 
+.manualHeader p {
+  margin-top: 3px;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.4;
+}
+
 .aiSetupGuide {
   display: grid;
   gap: 13px;
@@ -390,20 +397,112 @@ main {
   min-height: 38px;
 }
 
+.addModeSwitch {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 4px;
+  padding: 4px;
+  background: var(--sand);
+  border-radius: 8px;
+  box-shadow: inset 0 0 0 1px var(--stone);
+}
+
+.addModeButton {
+  display: flex;
+  min-width: 0;
+  min-height: 34px;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 5px 8px;
+  color: var(--muted);
+  background: transparent;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 750;
+}
+
+.addModeButton.active {
+  color: var(--heading);
+  background: var(--surface);
+  box-shadow: 0 1px 3px rgb(31 27 23 / 9%), inset 0 0 0 1px var(--border);
+}
+
+.addModeButton svg {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 auto;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.8;
+}
+
+.addModePanel {
+  display: grid;
+  gap: 10px;
+}
+
+.manualFieldRow {
+  display: grid;
+  grid-template-columns: minmax(110px, 0.75fr) minmax(0, 1.25fr);
+  gap: 8px;
+}
+
+.manualAdvanced {
+  padding-top: 8px;
+  border-top: 1px solid var(--stone);
+}
+
+.manualAdvanced summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 700;
+  list-style: none;
+}
+
+.manualAdvanced summary::-webkit-details-marker {
+  display: none;
+}
+
+.manualAdvanced summary::after {
+  content: "+";
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1;
+}
+
+.manualAdvanced[open] summary::after {
+  content: "−";
+}
+
+.manualAdvanced label {
+  margin-top: 8px;
+}
+
+.documentLead {
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.45;
+}
+
 .documentImport {
   display: grid;
-  gap: 9px;
-  padding-top: 12px;
-  border-top: 1px solid var(--stone);
+  gap: 10px;
 }
 
 .documentDropzone {
   display: grid;
-  min-height: 96px;
+  min-height: 128px;
   place-items: center;
   align-content: center;
   gap: 5px;
-  padding: 12px;
+  padding: 16px 12px;
   color: var(--muted);
   background: var(--sand);
   border: 1px dashed var(--border);
@@ -421,8 +520,8 @@ main {
 }
 
 .documentDropzone svg {
-  width: 20px;
-  height: 20px;
+  width: 26px;
+  height: 26px;
   fill: none;
   stroke: currentColor;
   stroke-linecap: round;
@@ -446,15 +545,24 @@ main {
 }
 
 .documentDropLabel {
-  font-size: 12px;
+  color: var(--heading);
+  font-size: 13px;
   font-weight: 700;
 }
 
+.documentDropHint {
+  color: var(--muted);
+  font-size: 11px;
+}
+
 .documentActions {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
+  display: grid;
+}
+
+.documentActions .primary {
+  width: 100%;
+  min-height: 38px;
+  justify-content: center;
 }
 
 .documentFileName {
@@ -499,6 +607,11 @@ main {
 .primary {
   color: var(--cream);
   background: var(--ink);
+}
+
+.primary:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
 }
 
 .actionStatusButton {

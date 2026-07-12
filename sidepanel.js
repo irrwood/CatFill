@@ -538,6 +538,7 @@ async function addManualEntry(event) {
   state.editingIndex = null;
   await saveProfiles();
   $("addEntryForm").reset();
+  $("manualAdvanced").open = false;
   $("newCategory").value = "其他";
   renderSuggestion();
   renderGroups();
@@ -690,6 +691,8 @@ async function analyzeDocument() {
   state.editingIndex = null;
   renderSuggestion();
   renderGroups();
+  setDocumentFile(null);
+  $("documentFile").value = "";
   switchTab("organizerPanel");
 }
 
@@ -711,11 +714,25 @@ $("profileSelect").onchange = async (event) => {
 
 $("addEntryForm").onsubmit = addManualEntry;
 
+function switchAddMode(panelId) {
+  const validPanelIds = new Set(["manualEntryMode", "documentEntryMode"]);
+  const targetPanelId = validPanelIds.has(panelId) ? panelId : "manualEntryMode";
+  document.querySelectorAll(".addModeButton").forEach((button) => {
+    const active = button.dataset.addMode === targetPanelId;
+    button.classList.toggle("active", active);
+    button.setAttribute("aria-selected", String(active));
+  });
+  document.querySelectorAll(".addModePanel").forEach((panel) => {
+    panel.classList.toggle("hidden", panel.id !== targetPanelId);
+  });
+}
+
 function setDocumentFile(file) {
   state.documentFile = file || null;
   const zone = $("documentDropzone");
   zone.classList.toggle("hasFile", Boolean(file));
   $("documentFileName").textContent = file ? file.name : "";
+  $("analyzeDocumentBtn").disabled = !file;
 }
 
 $("documentFile").onchange = () => setDocumentFile($("documentFile").files?.[0]);
@@ -759,9 +776,13 @@ $("analyzeDocumentBtn").onclick = async () => {
     button.classList.remove("loading", "done");
     setStatus(e.message || i18n.t("analyzeFailed"), "err");
   } finally {
-    button.disabled = false;
+    button.disabled = !state.documentFile;
   }
 };
+
+document.querySelectorAll(".addModeButton").forEach((button) => {
+  button.onclick = () => switchAddMode(button.dataset.addMode);
+});
 
 document.querySelectorAll(".tabButton").forEach((button) => {
   button.onclick = () => switchTab(button.dataset.tab);

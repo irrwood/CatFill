@@ -69,26 +69,47 @@
       <section class="manualCard">
         <div class="manualHeader">
           <div>
-            <span class="eyebrow" data-i18n="field">字段</span>
             <h2 data-i18n="addDetails">添加资料</h2>
+            <p data-i18n="addDetailsHint">单独录入一项资料，或从文件中批量提取。</p>
           </div>
         </div>
-        <form id="addEntryForm" class="manualForm">
-          <label><span data-i18n="category">分类</span>
-            <select id="newCategory"></select>
-          </label>
-          <label><span data-i18n="fieldName">字段名</span>
-            <input id="newKey" data-i18n-placeholder="keyPlaceholder" placeholder="如 邮箱、LinkedIn、姓名" autocomplete="off" />
-          </label>
-          <label><span data-i18n="value">值</span>
-            <input id="newValue" data-i18n-placeholder="valuePlaceholder" placeholder="要填写的内容" autocomplete="off" />
-          </label>
-          <label><span data-i18n="aliasesOptional">别名（可选）</span>
-            <input id="newAliases" data-i18n-placeholder="aliasesPlaceholder" placeholder="如 email, e-mail" autocomplete="off" />
-          </label>
-          <button class="primary" type="submit" data-i18n="addField">添加字段</button>
-        </form>
-        <div class="documentImport">
+        <div class="addModeSwitch" role="tablist" data-i18n-title="addModeLabel">
+          <button class="addModeButton active" type="button" role="tab" aria-selected="true" data-add-mode="manualEntryMode">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" /></svg>
+            <span data-i18n="manualMode">手动录入</span>
+          </button>
+          <button class="addModeButton" type="button" role="tab" aria-selected="false" data-add-mode="documentEntryMode">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h8l4 4v14H6V3Z" /><path d="M14 3v5h5" /></svg>
+            <span data-i18n="fileMode">文件导入</span>
+          </button>
+        </div>
+
+        <section id="manualEntryMode" class="addModePanel" role="tabpanel">
+          <form id="addEntryForm" class="manualForm">
+            <div class="manualFieldRow">
+              <label><span data-i18n="category">分类</span>
+                <select id="newCategory"></select>
+              </label>
+              <label><span data-i18n="fieldName">字段名</span>
+                <input id="newKey" data-i18n-placeholder="keyPlaceholder" placeholder="如 邮箱、LinkedIn、姓名" autocomplete="off" />
+              </label>
+            </div>
+            <label><span data-i18n="value">值</span>
+              <input id="newValue" data-i18n-placeholder="valuePlaceholder" placeholder="要填写的内容" autocomplete="off" />
+            </label>
+            <details id="manualAdvanced" class="manualAdvanced">
+              <summary data-i18n="moreOptions">更多选项</summary>
+              <label><span data-i18n="aliasesOptional">别名（可选）</span>
+                <input id="newAliases" data-i18n-placeholder="aliasesPlaceholder" placeholder="如 email, e-mail" autocomplete="off" />
+              </label>
+            </details>
+            <button class="primary" type="submit" data-i18n="saveDetail">保存资料</button>
+          </form>
+        </section>
+
+        <section id="documentEntryMode" class="addModePanel hidden" role="tabpanel">
+          <p class="documentLead" data-i18n="documentImportHint">AI 会生成可确认的字段建议，不会直接覆盖已保存资料。</p>
+          <div class="documentImport">
           <label id="documentDropzone" class="documentDropzone" tabindex="0">
             <input id="documentFile" type="file" accept="application/pdf,.pdf,text/plain,.txt,text/csv,.csv,application/vnd.ms-excel,.xls,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,.xlsx,application/vnd.ms-excel.sheet.macroEnabled.12,.xlsm,application/vnd.ms-excel.sheet.binary.macroEnabled.12,.xlsb,image/jpeg,.jpg,.jpeg,image/png,.png,image/webp,.webp" />
             <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -96,12 +117,13 @@
               <path d="m7 9 5-5 5 5" />
               <path d="M5 20h14" />
             </svg>
-            <span class="documentDropLabel" data-i18n="uploadDocument">拖入 PDF、Excel、图片或 TXT，或点击选择</span>
+            <span class="documentDropLabel" data-i18n="fileDropTitle">选择文件，或拖到这里</span>
+            <span class="documentDropHint" data-i18n="fileDropHint">支持 PDF、Excel、图片和 TXT</span>
             <span id="documentFileName" class="documentFileName"></span>
           </label>
           <div class="documentActions">
-            <button id="analyzeDocumentBtn" class="primary actionStatusButton" type="button">
-              <span data-i18n="analyze">AI 分析</span>
+            <button id="analyzeDocumentBtn" class="primary actionStatusButton" type="button" disabled>
+              <span data-i18n="analyzeFile">分析文件</span>
               <svg class="spinIcon" viewBox="0 0 24 24" aria-hidden="true">
                 <path d="M20 6v5h-5" />
                 <path d="M19 11a7 7 0 1 0-2.05 4.95" />
@@ -111,7 +133,8 @@
               </svg>
             </button>
           </div>
-        </div>
+          </div>
+        </section>
       </section>
     </section>
 

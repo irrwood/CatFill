@@ -26,12 +26,16 @@ test("interface translations switch between Chinese and English", () => {
   assert.equal(i18n.category("联系方式"), "Contact");
   assert.equal(i18n.category("旅行"), "Travel");
   assert.equal(i18n.t("setupProviderStep", { provider: "OpenAI" }), "Use OpenAI");
+  assert.equal(i18n.t("manualMode"), "Enter manually");
+  assert.equal(i18n.t("fileDropTitle"), "Choose a file or drop it here");
 
   i18n.setLocale("zh");
   assert.equal(i18n.t("organizerTab"), "字段整理");
   assert.equal(i18n.category("联系方式"), "联系方式");
   assert.equal(i18n.category("旅行"), "旅行");
   assert.equal(i18n.t("setupProviderStep", { provider: "OpenAI" }), "使用 OpenAI");
+  assert.equal(i18n.t("manualMode"), "手动录入");
+  assert.equal(i18n.t("fileDropTitle"), "选择文件，或拖到这里");
 });
 
 test("theme preference resolves system and explicit dark mode", () => {
