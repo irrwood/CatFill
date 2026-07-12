@@ -1,6 +1,8 @@
 const $ = (id) => document.getElementById(id);
 const organizer = globalThis.CatFillFieldOrganizer;
 const i18n = globalThis.CatFillI18n;
+const SIDE_PANEL_TARGET_KEY = "sidePanelTargetTab";
+const SIDE_PANEL_TABS = new Set(["organizerPanel", "manualPanel", "settingsPanel"]);
 
 let state = {
   profiles: {},
@@ -98,7 +100,7 @@ function activeProfile() {
 }
 
 async function load() {
-  const data = await chrome.storage.local.get(["profiles", "activeProfileId", "settings"]);
+  const data = await chrome.storage.local.get(["profiles", "activeProfileId", "settings", SIDE_PANEL_TARGET_KEY]);
   i18n.setLocale(data.settings?.language);
   i18n.setTheme(data.settings?.theme);
   state.profiles = data.profiles || {};
@@ -113,6 +115,8 @@ async function load() {
   renderSettings();
   renderSuggestion();
   renderGroups();
+  switchTab(SIDE_PANEL_TABS.has(data[SIDE_PANEL_TARGET_KEY]) ? data[SIDE_PANEL_TARGET_KEY] : "organizerPanel");
+  if (data[SIDE_PANEL_TARGET_KEY]) await chrome.storage.local.remove(SIDE_PANEL_TARGET_KEY);
 }
 
 async function saveProfiles() {
@@ -750,6 +754,13 @@ $("analyzeDocumentBtn").onclick = async () => {
 
 document.querySelectorAll(".tabButton").forEach((button) => {
   button.onclick = () => switchTab(button.dataset.tab);
+});
+
+chrome.storage.onChanged.addListener((changes, areaName) => {
+  const targetTab = changes[SIDE_PANEL_TARGET_KEY]?.newValue;
+  if (areaName !== "local" || !SIDE_PANEL_TABS.has(targetTab)) return;
+  switchTab(targetTab);
+  chrome.storage.local.remove(SIDE_PANEL_TARGET_KEY).catch(() => {});
 });
 
   $("provider").onchange = () => {

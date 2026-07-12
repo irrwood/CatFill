@@ -221,19 +221,23 @@ $("aiFillBtn").onclick = async () => {
   }
 };
 
-async function openSidePanel() {
+const SIDE_PANEL_TARGET_KEY = "sidePanelTargetTab";
+
+async function openSidePanel(targetTab = "organizerPanel") {
   try {
+    await chrome.storage.local.set({ [SIDE_PANEL_TARGET_KEY]: targetTab });
     const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
     if (!tab?.windowId) throw new Error(i18n.t("windowNotFound"));
     await chrome.sidePanel.open({ windowId: tab.windowId });
     window.close();
   } catch (e) {
+    await chrome.storage.local.remove(SIDE_PANEL_TARGET_KEY).catch(() => {});
     setStatus(e.message, true);
   }
 }
 
-$("openSidePanelBtn").onclick = openSidePanel;
-$("settingsBtn").onclick = openSidePanel;
+$("openSidePanelBtn").onclick = () => openSidePanel("organizerPanel");
+$("settingsBtn").onclick = () => openSidePanel("settingsPanel");
 
 // ---------- 联系人管理 ----------
 $("profileSelect").onchange = async (e) => {
