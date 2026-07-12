@@ -716,7 +716,7 @@ $("addEntryForm").onsubmit = addManualEntry;
 
 function switchAddMode(panelId) {
   const validPanelIds = new Set(["manualEntryMode", "documentEntryMode"]);
-  const targetPanelId = validPanelIds.has(panelId) ? panelId : "manualEntryMode";
+  const targetPanelId = validPanelIds.has(panelId) ? panelId : "documentEntryMode";
   document.querySelectorAll(".addModeButton").forEach((button) => {
     const active = button.dataset.addMode === targetPanelId;
     button.classList.toggle("active", active);
