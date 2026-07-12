@@ -426,3 +426,34 @@ test("valueSynonyms cover Schengen option wordings", () => {
   assert.ok(organizer.valueSynonyms("法国").includes("france"));
   assert.ok(organizer.valueSynonyms("丧偶").includes("widower"));
 });
+
+test("Schengen fields match official French and Spanish labels", () => {
+  const organizer = loadOrganizer();
+  const blank = { name: "", id: "", placeholder: "", ariaLabel: "", autocomplete: "" };
+  const entries = organizer.organizeEntries([
+    { signals: { ...blank, label: "Nom à la naissance [nom(s) de famille antérieur(s)]" }, value: "Martin" },
+    { signals: { ...blank, label: "État membre de première entrée" }, value: "France" },
+    { signals: { ...blank, label: "Impresiones dactilares tomadas anteriormente para solicitudes de visados Schengen" }, value: "Sí" },
+    { signals: { ...blank, label: "Información adicional sobre el motivo de la estancia" }, value: "Conference" },
+    { signals: { ...blank, label: "Otras nacionalidades" }, value: "Canadian" },
+  ]);
+
+  const byKey = Object.fromEntries(entries.map((entry) => [entry.canonicalKey, entry.category]));
+  assert.equal(byKey["出生时姓氏"], "身份信息");
+  assert.equal(byKey["首次入境国家"], "旅行");
+  assert.equal(byKey["曾采集申根指纹"], "证件");
+  assert.equal(byKey["旅行目的补充说明"], "旅行");
+  assert.equal(byKey["其他国籍"], "身份信息");
+});
+
+test("Schengen option synonyms include official French and Spanish wording", () => {
+  const organizer = loadOrganizer();
+  assert.ok(organizer.valueSynonyms("旅游").includes("tourisme"));
+  assert.ok(organizer.valueSynonyms("旅游").includes("turismo"));
+  assert.ok(organizer.valueSynonyms("多次").includes("entréesmultiples"));
+  assert.ok(organizer.valueSynonyms("多次").includes("múltiples"));
+  assert.ok(organizer.valueSynonyms("普通护照").includes("passeportordinaire"));
+  assert.ok(organizer.valueSynonyms("普通护照").includes("pasaporteordinario"));
+  assert.ok(organizer.valueSynonyms("现金").includes("argentliquide"));
+  assert.ok(organizer.valueSynonyms("现金").includes("efectivo"));
+});
