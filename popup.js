@@ -6,11 +6,33 @@
 const $ = (id) => document.getElementById(id);
 const i18n = globalThis.CatFillI18n;
 let state = { profiles: {}, activeProfileId: null, settings: {} };
+let activityTimer = null;
 
 function setStatus(text, isErr = false) {
   const el = $("status");
   el.textContent = text;
   el.className = isErr ? "err" : "";
+}
+
+function showFillActivity(text) {
+  clearTimeout(activityTimer);
+  $("fillActivityText").textContent = text;
+  $("fillActivity").className = "fillActivity";
+  document.querySelector(".actionPanel").setAttribute("aria-busy", "true");
+  document.querySelectorAll(".actionCard").forEach((button) => { button.disabled = true; });
+}
+
+function finishFillActivity(text) {
+  $("fillActivityText").textContent = text;
+  $("fillActivity").className = "fillActivity done";
+  activityTimer = setTimeout(hideFillActivity, 900);
+}
+
+function hideFillActivity() {
+  clearTimeout(activityTimer);
+  $("fillActivity").className = "fillActivity hidden";
+  document.querySelector(".actionPanel").removeAttribute("aria-busy");
+  document.querySelectorAll(".actionCard").forEach((button) => { button.disabled = false; });
 }
 
 // ---------- 存储 ----------
@@ -191,11 +213,16 @@ $("scanBtn").onclick = async () => {
 $("fillBtn").onclick = async () => {
   try {
     setStatus(i18n.t("filling"));
+    showFillActivity(i18n.t("filling"));
     const { filled, total } = await withContentScript("fill", {
       entries: activeProfile().entries,
     });
-    setStatus(i18n.t("fillResult", { filled, total }));
+    const result = i18n.t("fillResult", { filled, total });
+    setStatus(result);
+    if (filled) finishFillActivity(result);
+    else hideFillActivity();
   } catch (e) {
+    hideFillActivity();
     setStatus(e.message, true);
   }
 };
@@ -203,6 +230,7 @@ $("fillBtn").onclick = async () => {
 $("aiFillBtn").onclick = async () => {
   try {
     setStatus(i18n.t("aiAnalyzing"));
+    showFillActivity(i18n.t("aiAnalyzing"));
     const { fields, frameId, page } = await withContentScript("scan");
     const res = await chrome.runtime.sendMessage({
       action: "aiMap",
@@ -215,8 +243,12 @@ $("aiFillBtn").onclick = async () => {
       assignments: res.assignments,
       frameId,
     });
-    setStatus(filled ? i18n.t("aiFillVerified", { filled }) : i18n.t("aiFillNone"));
+    const result = filled ? i18n.t("aiFillVerified", { filled }) : i18n.t("aiFillNone");
+    setStatus(result);
+    if (filled) finishFillActivity(result);
+    else hideFillActivity();
   } catch (e) {
+    hideFillActivity();
     setStatus(e.message, true);
   }
 };
