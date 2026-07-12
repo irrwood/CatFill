@@ -536,34 +536,33 @@
       .filter((el) => isVisible(el) && cleanText(el.textContent));
   }
 
-  function bestOptionMatch(options, candidates) {
-    const normCandidates = candidates.map(norm).filter(Boolean);
-    let partial = null;
-    for (const option of options) {
-      const text = norm(cleanText(option.textContent));
-      if (!text) continue;
-      if (normCandidates.some((c) => text === c)) return option;
-      if (!partial && normCandidates.some((c) => text.includes(c) || c.includes(text))) partial = option;
-    }
-    return partial;
-  }
-
   async function applyCustomSelect(el, valueOrEntry) {
-    const candidates = valueCandidates(valueOrEntry).map(String).filter(Boolean);
-    if (!candidates.length) return false;
+    const rawCandidates = valueCandidates(valueOrEntry).map(String).filter(Boolean);
+    if (!rawCandidates.length) return false;
 
     el.focus?.();
     clickLikeUser(el);
     // 可搜索型：往内部 input 打字让弹层过滤（不 blur，否则弹层会关掉）
     const input = el.matches("input") ? el : el.querySelector("input");
-    if (input && !input.readOnly) setNativeValue(input, candidates[0], { blur: false });
+    let typed = false;
+    if (input && !input.readOnly) {
+      setNativeValue(input, rawCandidates[0], { blur: false });
+      typed = true;
+    }
 
     for (let attempt = 0; attempt < 10; attempt++) {
       await wait(120);
-      const target = bestOptionMatch(visiblePopupOptions(), candidates);
+      const options = visiblePopupOptions();
+      const target = bestCandidateMatch(options, (option) => [optionText(option)], valueOrEntry);
       if (target) {
         clickLikeUser(target);
         return true;
+      }
+      // 打字过滤后一个选项都不剩（如资料是「护照」、选项是英文）：
+      // 清空搜索词恢复全量选项，靠同义词匹配挑
+      if (typed && !options.length && attempt >= 3) {
+        setNativeValue(input, "", { blur: false });
+        typed = false;
       }
     }
     // 搜索型输入已把列表过滤到最接近项时，Enter 通常能选中第一项
@@ -603,6 +602,59 @@
     ].filter((value) => value !== undefined && value !== null && value !== "");
   }
 
+  // 值同义词扩展：资料「护照」→ 也尝试 ordinary passport / travel document（词典在 fieldOrganizer）
+  function expandedSynonyms(primaryNorms) {
+    const lookup = globalThis.CatFillFieldOrganizer?.valueSynonyms;
+    if (!lookup) return [];
+    const out = [];
+    for (const candidate of primaryNorms) {
+      for (const synonym of lookup(candidate)) {
+        if (!primaryNorms.includes(synonym) && !out.includes(synonym)) out.push(synonym);
+      }
+    }
+    return out;
+  }
+
+  // 否定前缀防护：候选「本科」不能包含匹配到选项「非本科」
+  function containsClean(container, part) {
+    const idx = container.indexOf(part);
+    if (idx < 0) return false;
+    const before = container.slice(Math.max(0, idx - 3), idx);
+    return !/[非不无没未]$|not$|non$|no$/.test(before);
+  }
+
+  // 选项文字与候选值的匹配强度：原值精确 > 同义词精确 > 原值包含 > 同义词包含。
+  // 包含匹配要求被包含文本 ≥2 字符（"m"/"f" 只允许精确命中）。
+  function candidateMatchScore(texts, primary, expanded) {
+    let best = 0;
+    for (const text of texts) {
+      const t = norm(text);
+      if (!t) continue;
+      if (primary.includes(t)) return 4;
+      if (expanded.includes(t)) best = Math.max(best, 3);
+      else if (primary.some((c) => c.length >= 2 && t.length >= 2 && (containsClean(t, c) || containsClean(c, t)))) best = Math.max(best, 2);
+      else if (expanded.some((c) => c.length >= 2 && t.length >= 2 && (containsClean(t, c) || containsClean(c, t)))) best = Math.max(best, 1);
+    }
+    return best;
+  }
+
+  // 在一组选项里挑匹配最强的那个；textsOf 返回该选项可比较的文字（value/显示文本/label）
+  function bestCandidateMatch(items, textsOf, valueOrEntry) {
+    const primary = valueCandidates(valueOrEntry).map(norm).filter(Boolean);
+    if (!primary.length) return null;
+    const expanded = expandedSynonyms(primary);
+    let best = null;
+    let bestScore = 0;
+    for (const item of items) {
+      const score = candidateMatchScore(textsOf(item), primary, expanded);
+      if (score > bestScore) {
+        bestScore = score;
+        best = item;
+      }
+    }
+    return best;
+  }
+
   function resolvedEntryForField(field, entry, entries) {
     const resolver = globalThis.CatFillFieldOrganizer?.resolveEntryValueForField;
     if (!resolver || !entry || entry.choice || entry.file) return entry;
@@ -613,12 +665,7 @@
   }
 
   function applyCustomChoice(group, valueOrEntry) {
-    const candidates = valueCandidates(valueOrEntry).map(norm).filter(Boolean);
-    if (!candidates.length) return false;
-    const target = group.options.find((option) => {
-      const text = norm(optionText(option));
-      return candidates.some((candidate) => text === candidate || text.includes(candidate) || candidate.includes(text));
-    });
+    const target = bestCandidateMatch(group.options, (option) => [optionText(option)], valueOrEntry);
     if (!target) return false;
     target.click();
     target.dispatchEvent(new Event("input", { bubbles: true }));
@@ -641,20 +688,15 @@
     if (type === "file") return false;
     if (type === "radio") {
       const group = el.name
-        ? rootOf(el).querySelectorAll(`input[type="radio"][name="${CSS.escape(el.name)}"]`)
+        ? [...rootOf(el).querySelectorAll(`input[type="radio"][name="${CSS.escape(el.name)}"]`)]
         : [el];
-      for (const r of group) {
-        if (candidates.some((candidate) => norm(r.value) === norm(candidate) || norm(labelText(r)) === norm(candidate))) {
-          if (!r.checked) r.click();
-          return true;
-        }
-      }
-      return false;
+      const target = bestCandidateMatch(group, (r) => [r.value, labelText(r)], valueOrEntry);
+      if (!target) return false;
+      if (!target.checked) target.click();
+      return true;
     }
     if (el.tagName === "SELECT") {
-      const target = [...el.options].find(
-        (o) => candidates.some((candidate) => norm(o.value) === norm(candidate) || norm(o.textContent) === norm(candidate))
-      );
+      const target = bestCandidateMatch([...el.options], (o) => [o.value, o.textContent], valueOrEntry);
       if (!target) return false;
       setNativeValue(el, target.value);
       return true;
@@ -670,14 +712,15 @@
     return true;
   }
 
+  // 验证时也要认同义词：填「护照」实际选中的是「Ordinary Passport」，同样算成功
   function valuesMatch(actual, candidates, { partial = false } = {}) {
     const value = norm(actual);
     if (!value) return false;
-    return candidates.some((candidate) => {
-      const expected = norm(candidate);
-      if (!expected) return false;
-      return value === expected || (partial && (value.includes(expected) || expected.includes(value)));
-    });
+    const primary = candidates.map(norm).filter(Boolean);
+    const expectedAll = [...primary, ...expandedSynonyms(primary)];
+    return expectedAll.some(
+      (expected) => value === expected || (partial && expected.length >= 2 && (value.includes(expected) || expected.includes(value))),
+    );
   }
 
   function selectedCustomText(group) {
@@ -711,11 +754,18 @@
       const group = el.name
         ? rootOf(el).querySelectorAll(`input[type="radio"][name="${CSS.escape(el.name)}"]`)
         : [el];
-      return [...group].some((radio) => radio.checked && valuesMatch(radio.value || labelText(radio), candidates, { partial: true }));
+      // value 和 label 都要试：value 常是 "1"/"cn" 这类代码，语义在 label 上
+      return [...group].some((radio) => radio.checked && (
+        valuesMatch(radio.value, candidates, { partial: true }) ||
+        valuesMatch(labelText(radio), candidates, { partial: true })
+      ));
     }
     if (el.tagName === "SELECT") {
       const selected = el.selectedOptions?.[0];
-      return Boolean(selected) && valuesMatch(selected.value || selected.textContent, candidates, { partial: true });
+      return Boolean(selected) && (
+        valuesMatch(selected.value, candidates, { partial: true }) ||
+        valuesMatch(selected.textContent, candidates, { partial: true })
+      );
     }
     return valuesMatch(el.value, candidates);
   }
@@ -762,11 +812,12 @@
   // 双方文本命中同一组（归一化后精确相等，避免子串误伤）→ 强加分。
   const AUTOCOMPLETE_TO_KEY = {
     email: "邮箱", tel: "手机", "tel-national": "手机", name: "姓名",
-    "given-name": "名", "family-name": "姓",
+    "given-name": "名", "family-name": "姓", "additional-name": "中间名",
     "street-address": "地址", "address-line1": "地址",
     "postal-code": "邮编", country: "国家/地区", "country-name": "国家/地区",
     organization: "公司", "organization-title": "职位",
     "address-level1": "省/州", "address-level2": "城市",
+    bday: "出生日期", sex: "性别", "honorific-prefix": "称谓",
   };
 
   function synonymDefs() {
@@ -891,6 +942,25 @@
           sendResponse({ ok: true, ...(await heuristicFill(msg.entries)) });
         } else if (msg.action === "applyAssignments") {
           sendResponse({ ok: true, ...(await applyAssignments(msg.assignments)) });
+        } else if (msg.action === "debugMatch") {
+          // 开发调试：每个字段的最佳条目与得分（不填充）
+          const fields = scan();
+          const defs = synonymDefs();
+          const rows = fields.map((field) => {
+            const fg = fieldGroups(field.signals, defs);
+            let bestKey = null;
+            let bestScore = 0;
+            for (const entry of msg.entries || []) {
+              let s = score(field.signals, entry);
+              if (fg.size && intersects(fg, entryGroups(entry, defs))) s += 6;
+              if (s > bestScore) {
+                bestScore = s;
+                bestKey = entry.canonicalKey || entry.signals?.label;
+              }
+            }
+            return { index: field.index, type: field.type, label: field.signals.label || field.signals.question, bestKey, bestScore };
+          });
+          sendResponse({ ok: true, rows });
         } else {
           sendResponse({ ok: false, error: `未知 action: ${msg.action}` });
         }

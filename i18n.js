@@ -34,7 +34,7 @@ globalThis.CatFillI18n = (() => {
       filling: "填充中…", fillResult: "已填充 {filled}/{total} 个字段", aiAnalyzing: "AI 分析页面中…（可能需要几十秒）",
       aiRequestFailed: "AI 请求失败", aiFillVerified: "AI 已确认填充 {filled} 个字段", aiFillNone: "AI 未能确认填入任何字段",
       windowNotFound: "找不到当前窗口", english: "English", chinese: "中文", theme: "外观", themeSystem: "跟随系统", themeLight: "浅色", themeDark: "夜间",
-      categories: { "身份信息": "身份信息", "联系方式": "联系方式", "地址": "地址", "公司/工作": "公司/工作", "其他": "其他" },
+      categories: { "身份信息": "身份信息", "证件": "证件", "联系方式": "联系方式", "地址": "地址", "教育": "教育", "公司/工作": "公司/工作", "旅行": "旅行", "其他": "其他" },
     },
     en: {
       refresh: "Refresh", organize: "Organize with AI", currentProfile: "Profile", tabsLabel: "Side panel sections",
@@ -70,7 +70,7 @@ globalThis.CatFillI18n = (() => {
       filling: "Filling…", fillResult: "Filled {filled}/{total} fields", aiAnalyzing: "AI is analyzing this page… (may take a few seconds)",
       aiRequestFailed: "AI request failed", aiFillVerified: "AI confirmed {filled} fields filled", aiFillNone: "AI could not confirm any filled fields",
       windowNotFound: "Could not find the current window", english: "English", chinese: "Chinese", theme: "Appearance", themeSystem: "System", themeLight: "Light", themeDark: "Dark",
-      categories: { "身份信息": "Identity", "联系方式": "Contact", "地址": "Address", "公司/工作": "Work", "其他": "Other" },
+      categories: { "身份信息": "Identity", "证件": "Documents", "联系方式": "Contact", "地址": "Address", "教育": "Education", "公司/工作": "Work", "旅行": "Travel", "其他": "Other" },
     },
   };
 
@@ -117,7 +117,7 @@ globalThis.CatFillI18n = (() => {
   }
 
   function category(value) {
-    return t(`categories.${value}`) || value;
+    return messages[locale].categories?.[value] ?? messages.zh.categories?.[value] ?? value;
   }
 
   function applyDocument(root = document) {

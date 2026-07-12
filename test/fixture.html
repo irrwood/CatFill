@@ -55,6 +55,24 @@
     </select>
   </div>
 
+  <!-- 值同义词：资料存中文「护照」，选项只有英文写法 -->
+  <div class="form-group">
+    <label for="doc-type">Type of travel document</label>
+    <select id="doc-type" name="document_type">
+      <option value="">Please select...</option>
+      <option value="op">Ordinary Passport</option>
+      <option value="dp">Diplomatic Passport</option>
+      <option value="sb">Seaman's Book</option>
+    </select>
+  </div>
+
+  <!-- 值同义词 radio：性别 -->
+  <fieldset style="border:none;padding:0">
+    <legend class="qt">Gender</legend>
+    <label><input type="radio" name="gender" value="male" /> Male</label>
+    <label><input type="radio" name="gender" value="female" /> Female</label>
+  </fieldset>
+
   <!-- radio 完整问题 -->
   <fieldset style="border:none;padding:0">
     <legend class="qt">Will you now or in the future require visa sponsorship for employment?</legend>
@@ -98,6 +116,42 @@
   <div class="form-group">
     <label for="start-date">期望入职日期</label>
     <input id="start-date" name="start_date" readonly placeholder="YYYY-MM-DD" />
+  </div>
+
+  <!-- 申根签证表节选（欧盟统一格式官方措辞），资料为中文时应全部命中 -->
+  <h2 style="font-size:16px">Application for Schengen Visa（节选）</h2>
+  <div class="form-group">
+    <label for="surname-birth">Surname at birth (Former family name(s))</label>
+    <input id="surname-birth" name="surname_at_birth" />
+  </div>
+  <div class="form-group">
+    <label for="marital">Marital status</label>
+    <select id="marital" name="marital_status">
+      <option value="">Please select</option>
+      <option>Single</option><option>Married</option><option>Separated</option>
+      <option>Divorced</option><option>Widow(er)</option>
+    </select>
+  </div>
+  <div class="form-group">
+    <label for="purpose">Main purpose(s) of the journey</label>
+    <select id="purpose" name="journey_purpose">
+      <option value="">Please select</option>
+      <option>Tourism</option><option>Business</option><option>Visiting family or friends</option>
+      <option>Study</option><option>Airport transit</option>
+    </select>
+  </div>
+  <fieldset style="border:none;padding:0">
+    <legend class="qt">Number of entries requested</legend>
+    <label><input type="radio" name="entries" value="se" /> Single entry</label>
+    <label><input type="radio" name="entries" value="te" /> Two entries</label>
+    <label><input type="radio" name="entries" value="me" /> Multiple entries</label>
+  </fieldset>
+  <div class="form-group">
+    <label for="dest">Member State of main destination</label>
+    <select id="dest" name="main_destination">
+      <option value="">Please select</option>
+      <option value="FR">France</option><option value="DE">Germany</option><option value="IT">Italy</option>
+    </select>
   </div>
 
   <!-- Shadow DOM -->

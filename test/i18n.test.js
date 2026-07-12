@@ -24,10 +24,12 @@ test("interface translations switch between Chinese and English", () => {
   assert.equal(i18n.locale, "en");
   assert.equal(i18n.t("organizerTab"), "Fields");
   assert.equal(i18n.category("联系方式"), "Contact");
+  assert.equal(i18n.category("旅行"), "Travel");
 
   i18n.setLocale("zh");
   assert.equal(i18n.t("organizerTab"), "字段整理");
   assert.equal(i18n.category("联系方式"), "联系方式");
+  assert.equal(i18n.category("旅行"), "旅行");
 });
 
 test("theme preference resolves system and explicit dark mode", () => {

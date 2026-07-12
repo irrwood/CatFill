@@ -1,6 +1,6 @@
 {
   "extensionName": {
-    "message": "CatFill 自动填表"
+    "message": "CatFill: Autofill Forms with AI"
   },
   "extensionDescription": {
     "message": "本地学习表单资料，一键自动填充；可选用你的 AI API 处理复杂字段与文件资料"

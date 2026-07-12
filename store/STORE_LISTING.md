@@ -2,7 +2,7 @@
 
 ## Identity
 
-- Name: CatFill - 私人 AI 自动填表
+- Name: CatFill: Autofill Forms with AI
 - Version: 0.2.0
 - Category: Productivity
 - Single purpose: Save user-approved form information locally and fill similar web forms on the user's command.

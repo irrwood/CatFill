@@ -1,6 +1,6 @@
 // Shared field cleanup helpers for popup, side panel, background tests.
 (() => {
-  const CATEGORY_ORDER = ["身份信息", "联系方式", "地址", "公司/工作", "其他"];
+  const CATEGORY_ORDER = ["身份信息", "证件", "联系方式", "地址", "教育", "公司/工作", "旅行", "其他"];
 
   const FIELD_DEFINITIONS = [
     {
@@ -75,6 +75,289 @@
       canonicalKeyEn: "Job title",
       aliases: ["职位", "职务", "岗位", "title", "job title", "job_title", "position", "role"],
     },
+    {
+      category: "身份信息",
+      canonicalKey: "出生日期",
+      canonicalKeyEn: "Date of birth",
+      aliases: ["出生日期", "生日", "出生年月", "出生年月日", "date of birth", "dob", "birth date", "birthdate", "birthday"],
+    },
+    {
+      category: "身份信息",
+      canonicalKey: "性别",
+      canonicalKeyEn: "Gender",
+      aliases: ["性别", "gender", "sex"],
+    },
+    {
+      category: "身份信息",
+      canonicalKey: "国籍",
+      canonicalKeyEn: "Nationality",
+      aliases: ["国籍", "nationality", "current nationality", "citizenship", "country of citizenship"],
+    },
+    {
+      category: "身份信息",
+      canonicalKey: "出生国籍",
+      canonicalKeyEn: "Nationality at birth",
+      aliases: ["出生国籍", "出生时国籍", "nationality at birth"],
+    },
+    {
+      // 申根表 5/6 是两个独立字段：出生地（城市）与出生国家，不能合并成一组
+      category: "身份信息",
+      canonicalKey: "出生地",
+      canonicalKeyEn: "Place of birth",
+      aliases: ["出生地", "place of birth", "birthplace", "city of birth", "出生城市"],
+    },
+    {
+      category: "身份信息",
+      canonicalKey: "出生国家",
+      canonicalKeyEn: "Country of birth",
+      aliases: ["出生国家", "country of birth"],
+    },
+    {
+      category: "身份信息",
+      canonicalKey: "出生时姓氏",
+      canonicalKeyEn: "Surname at birth",
+      aliases: ["出生时姓氏", "曾用姓", "婚前姓", "surname at birth", "former family name", "former family names", "maiden name"],
+    },
+    {
+      category: "身份信息",
+      canonicalKey: "婚姻状况",
+      canonicalKeyEn: "Marital status",
+      aliases: ["婚姻状况", "婚姻", "marital status", "civil status"],
+    },
+    {
+      category: "身份信息",
+      canonicalKey: "监护人",
+      canonicalKeyEn: "Legal guardian",
+      aliases: ["监护人", "法定监护人", "parental authority", "legal guardian"],
+    },
+    {
+      category: "身份信息",
+      canonicalKey: "民族",
+      canonicalKeyEn: "Ethnicity",
+      aliases: ["民族", "ethnicity", "ethnic group"],
+    },
+    {
+      category: "身份信息",
+      canonicalKey: "中间名",
+      canonicalKeyEn: "Middle name",
+      aliases: ["中间名", "middle name", "middle_name", "middlename"],
+    },
+    {
+      category: "身份信息",
+      canonicalKey: "称谓",
+      canonicalKeyEn: "Salutation",
+      aliases: ["称谓", "salutation", "name prefix", "honorific"],
+    },
+    {
+      category: "证件",
+      canonicalKey: "护照号码",
+      canonicalKeyEn: "Passport number",
+      aliases: ["护照号", "护照号码", "passport number", "passport no", "passport_number", "travel document number", "旅行证件号码"],
+    },
+    {
+      category: "证件",
+      canonicalKey: "证件类型",
+      canonicalKeyEn: "Document type",
+      aliases: ["证件类型", "证件种类", "document type", "id type", "travel document type", "type of travel document"],
+    },
+    {
+      category: "证件",
+      canonicalKey: "证件号码",
+      canonicalKeyEn: "ID number",
+      aliases: ["证件号码", "证件号", "id number", "document number", "identification number", "national id number", "身份证号", "身份证号码"],
+    },
+    {
+      category: "证件",
+      canonicalKey: "签发日期",
+      canonicalKeyEn: "Date of issue",
+      aliases: ["签发日期", "颁发日期", "date of issue", "issue date", "issued on"],
+    },
+    {
+      category: "证件",
+      canonicalKey: "证件有效期",
+      canonicalKeyEn: "Date of expiry",
+      aliases: ["有效期", "有效期至", "expiry date", "date of expiry", "expiration date", "valid until", "expires"],
+    },
+    {
+      category: "证件",
+      canonicalKey: "签发地",
+      canonicalKeyEn: "Place of issue",
+      aliases: ["签发地", "签发机关", "发证机关", "place of issue", "issuing authority", "issued by"],
+    },
+    {
+      category: "证件",
+      canonicalKey: "签证类型",
+      canonicalKeyEn: "Visa type",
+      aliases: ["签证类型", "visa type", "type of visa", "visa category", "visa class"],
+    },
+    {
+      category: "证件",
+      canonicalKey: "居留许可",
+      canonicalKeyEn: "Residence permit",
+      aliases: ["居留许可", "居留许可号码", "residence permit", "residence permit or equivalent", "residence permit number"],
+    },
+    {
+      category: "公司/工作",
+      canonicalKey: "职业",
+      canonicalKeyEn: "Occupation",
+      aliases: ["职业", "当前职业", "current occupation", "occupation", "profession"],
+    },
+    {
+      category: "旅行",
+      canonicalKey: "旅行目的",
+      canonicalKeyEn: "Purpose of journey",
+      aliases: ["旅行目的", "出行目的", "访问目的", "purpose of journey", "purpose of the journey", "purposes of the journey", "main purpose of the journey", "main purposes of the journey", "purpose of travel", "purpose of visit", "travel purpose", "journey purpose"],
+    },
+    {
+      category: "旅行",
+      canonicalKey: "目的地国家",
+      canonicalKeyEn: "Destination country",
+      aliases: ["目的地国家", "目的地", "主要目的地", "member state of destination", "member states of destination", "main destination", "country of destination", "destination country"],
+    },
+    {
+      category: "旅行",
+      canonicalKey: "首次入境国家",
+      canonicalKeyEn: "Country of first entry",
+      aliases: ["首次入境国家", "首次入境成员国", "member state of first entry", "country of first entry", "first entry"],
+    },
+    {
+      category: "旅行",
+      canonicalKey: "入境次数",
+      canonicalKeyEn: "Number of entries",
+      aliases: ["入境次数", "number of entries", "number of entries requested", "entries requested"],
+    },
+    {
+      category: "旅行",
+      canonicalKey: "停留天数",
+      canonicalKeyEn: "Duration of stay",
+      aliases: ["停留天数", "停留时间", "duration of stay", "duration of the intended stay", "number of days", "intended stay"],
+    },
+    {
+      category: "旅行",
+      canonicalKey: "入境日期",
+      canonicalKeyEn: "Date of arrival",
+      aliases: ["入境日期", "抵达日期", "到达日期", "intended date of arrival", "date of arrival", "arrival date"],
+    },
+    {
+      category: "旅行",
+      canonicalKey: "离境日期",
+      canonicalKeyEn: "Date of departure",
+      aliases: ["离境日期", "intended date of departure", "date of departure", "departure date"],
+    },
+    {
+      category: "旅行",
+      canonicalKey: "邀请人/住宿",
+      canonicalKeyEn: "Inviting person / accommodation",
+      aliases: ["邀请人", "inviting person", "surname and first name of the inviting person", "name of hotel", "temporary accommodation", "酒店名称", "住宿地址", "accommodation"],
+    },
+    {
+      category: "旅行",
+      canonicalKey: "邀请单位",
+      canonicalKeyEn: "Inviting company",
+      aliases: ["邀请单位", "邀请公司", "邀请机构", "inviting company", "inviting organisation", "inviting company/organisation"],
+    },
+    {
+      category: "旅行",
+      canonicalKey: "费用承担",
+      canonicalKeyEn: "Cost coverage",
+      aliases: ["费用承担", "费用来源", "cost of travelling", "cost of travelling and living", "means of support"],
+    },
+    {
+      category: "旅行",
+      canonicalKey: "旅行保险",
+      canonicalKeyEn: "Travel insurance",
+      aliases: ["旅行保险", "医疗保险", "travel insurance", "travel medical insurance"],
+    },
+    {
+      category: "教育",
+      canonicalKey: "学校",
+      canonicalKeyEn: "School",
+      aliases: ["学校", "毕业院校", "院校", "university", "school", "college", "institution", "alma mater"],
+    },
+    {
+      category: "教育",
+      canonicalKey: "专业",
+      canonicalKeyEn: "Major",
+      aliases: ["专业", "所学专业", "major", "field of study", "discipline"],
+    },
+    {
+      category: "教育",
+      canonicalKey: "学历",
+      canonicalKeyEn: "Education level",
+      aliases: ["学历", "最高学历", "学位", "education level", "degree", "highest degree", "qualification"],
+    },
+    {
+      category: "教育",
+      canonicalKey: "毕业时间",
+      canonicalKeyEn: "Graduation date",
+      aliases: ["毕业时间", "毕业日期", "毕业年份", "graduation date", "graduation year", "date of graduation"],
+    },
+    {
+      category: "联系方式",
+      canonicalKey: "微信",
+      canonicalKeyEn: "WeChat",
+      aliases: ["微信", "微信号", "wechat", "weixin", "wechat id"],
+    },
+    {
+      category: "联系方式",
+      canonicalKey: "QQ",
+      canonicalKeyEn: "QQ",
+      aliases: ["qq", "qq号"],
+    },
+    {
+      category: "联系方式",
+      canonicalKey: "LinkedIn",
+      canonicalKeyEn: "LinkedIn",
+      aliases: ["linkedin", "领英", "linkedin url", "linkedin profile"],
+    },
+    {
+      category: "联系方式",
+      canonicalKey: "GitHub",
+      canonicalKeyEn: "GitHub",
+      aliases: ["github", "github url"],
+    },
+    {
+      category: "联系方式",
+      canonicalKey: "个人网站",
+      canonicalKeyEn: "Website",
+      aliases: ["个人网站", "个人主页", "网站", "website", "personal website", "portfolio", "homepage"],
+    },
+    {
+      category: "联系方式",
+      canonicalKey: "紧急联系人",
+      canonicalKeyEn: "Emergency contact",
+      aliases: ["紧急联系人", "emergency contact", "emergency contact name"],
+    },
+    {
+      category: "地址",
+      canonicalKey: "区县",
+      canonicalKeyEn: "District",
+      aliases: ["区县", "district", "county"],
+    },
+    {
+      category: "公司/工作",
+      canonicalKey: "部门",
+      canonicalKeyEn: "Department",
+      aliases: ["部门", "department", "division"],
+    },
+    {
+      category: "公司/工作",
+      canonicalKey: "工作年限",
+      canonicalKeyEn: "Years of experience",
+      aliases: ["工作年限", "工作经验年限", "years of experience"],
+    },
+    {
+      category: "公司/工作",
+      canonicalKey: "期望薪资",
+      canonicalKeyEn: "Expected salary",
+      aliases: ["期望薪资", "薪资要求", "expected salary", "salary expectation", "desired salary", "desired compensation"],
+    },
+    {
+      category: "公司/工作",
+      canonicalKey: "到岗时间",
+      canonicalKeyEn: "Available start date",
+      aliases: ["到岗时间", "入职时间", "start date", "available start date", "earliest start date", "date available", "availability"],
+    },
   ];
 
   function norm(text) {
@@ -83,6 +366,95 @@
       .replace(/[\s:*：、（）()\[\]\-\/.]+/g, "")
       .replace(/_/g, "")
       .trim();
+  }
+
+  // 选项值同义词：解决"资料存的是「护照」、页面选项写的是 Ordinary Passport / Travel Document"。
+  // 每组必须在填表意图上严格等价，宁缺勿滥——错误合并会导致选错项。
+  const VALUE_SYNONYM_GROUPS = [
+    ["护照", "普通护照", "ordinary passport", "travel document", "旅行证件"],
+    ["身份证", "居民身份证", "id card", "national id", "identity card", "resident identity card"],
+    ["中国", "中华人民共和国", "china", "people's republic of china", "prc", "中国大陆", "mainland china", "china mainland"],
+    ["男", "男性", "male", "m"],
+    ["女", "女性", "female", "f"],
+    ["是", "yes", "true"],
+    ["否", "no", "false"],
+    ["已婚", "married"],
+    ["未婚", "单身", "single", "unmarried"],
+    ["本科", "学士", "bachelor", "bachelors", "bachelor's degree", "bachelor degree", "undergraduate degree"],
+    ["硕士", "硕士研究生", "研究生", "master", "masters", "master's degree", "master degree", "postgraduate"],
+    ["博士", "博士研究生", "phd", "doctorate", "doctoral degree", "doctor of philosophy"],
+    ["大专", "专科", "associate degree", "associate", "diploma"],
+    ["高中", "high school", "senior high school"],
+    ["汉族", "han", "han chinese"],
+    // —— 申根签证表（欧盟统一格式）选项原文 ——
+    // 婚姻状况（字段 9）
+    ["分居", "separated"],
+    ["离异", "离婚", "divorced"],
+    ["丧偶", "widowed", "widow", "widower", "widow(er)"],
+    // 护照类型（字段 12）
+    ["外交护照", "diplomatic passport"],
+    ["公务护照", "service passport"],
+    // 旅行目的（字段 21）
+    ["旅游", "观光", "tourism", "tourist"],
+    ["商务", "出差", "business"],
+    ["探亲访友", "探亲", "访友", "visiting family or friends", "family visit", "visit family or friends", "visiting relatives"],
+    ["文化", "文化活动", "cultural", "culture"],
+    ["体育", "sports", "sport"],
+    ["官方访问", "official visit"],
+    ["医疗", "就医", "medical reasons", "medical treatment", "medical"],
+    ["学习", "留学", "study"],
+    ["过境", "transit"],
+    ["机场过境", "airport transit"],
+    // 入境次数（字段 24）
+    ["一次", "单次", "一次入境", "single entry", "single", "one entry", "1"],
+    ["两次", "两次入境", "two entries", "double entry", "2"],
+    ["多次", "多次入境", "multiple entries", "multiple", "mult"],
+    // 费用承担与支付方式（字段 33）
+    ["本人承担", "本人", "by the applicant himself/herself", "by the applicant", "self", "myself"],
+    ["担保人承担", "担保人", "by a sponsor", "sponsor"],
+    ["现金", "cash"],
+    ["信用卡", "credit card"],
+    ["旅行支票", "traveller's cheques", "travelers cheques", "traveler's checks"],
+    ["预付住宿", "pre-paid accommodation", "prepaid accommodation"],
+    ["预付交通", "pre-paid transport", "prepaid transport"],
+    ["提供住宿", "accommodation provided"],
+    ["全部费用已承担", "all expenses covered", "all expenses covered during the stay"],
+    // 常用国家名（目的地/首次入境/国籍选择）
+    ["法国", "france"],
+    ["德国", "germany"],
+    ["意大利", "italy"],
+    ["西班牙", "spain"],
+    ["荷兰", "netherlands", "the netherlands", "holland"],
+    ["瑞士", "switzerland"],
+    ["希腊", "greece"],
+    ["葡萄牙", "portugal"],
+    ["奥地利", "austria"],
+    ["比利时", "belgium"],
+    ["丹麦", "denmark"],
+    ["瑞典", "sweden"],
+    ["挪威", "norway"],
+    ["芬兰", "finland"],
+    ["波兰", "poland"],
+    ["捷克", "czech republic", "czechia"],
+    ["匈牙利", "hungary"],
+    ["美国", "united states", "united states of america", "usa"],
+    ["英国", "united kingdom", "uk", "great britain", "britain"],
+    ["日本", "japan"],
+  ];
+  let normalizedValueSynonyms = null;
+
+  // 输入输出都是 norm() 后的文本；返回同组的其他写法
+  function valueSynonyms(normalizedValue) {
+    if (!normalizedValue) return [];
+    normalizedValueSynonyms ??= VALUE_SYNONYM_GROUPS.map((group) => group.map(norm));
+    const out = [];
+    for (const group of normalizedValueSynonyms) {
+      if (!group.includes(normalizedValue)) continue;
+      for (const item of group) {
+        if (item !== normalizedValue && !out.includes(item)) out.push(item);
+      }
+    }
+    return out;
   }
 
   function isMachineSignal(text) {
@@ -378,6 +750,7 @@
   globalThis.CatFillFieldOrganizer = {
     CATEGORY_ORDER,
     FIELD_DEFINITIONS,
+    VALUE_SYNONYM_GROUPS,
     deleteEntryAt,
     entryDisplayKey,
     groupOrganizedEntries,
@@ -385,5 +758,6 @@
     organizeEntries,
     resolveEntryValueForField,
     updateEntryAt,
+    valueSynonyms,
   };
 })();

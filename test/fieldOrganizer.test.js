@@ -374,3 +374,55 @@ test("resolveEntryValueForField joins separate first and last name entries for f
     "Qian Zhao",
   );
 });
+
+test("passport fields group into 证件 category with travel document aliases", () => {
+  const organizer = loadOrganizer();
+  const entries = organizer.organizeEntries([
+    { signals: { label: "Travel Document Number", name: "", id: "", placeholder: "", ariaLabel: "", autocomplete: "" }, value: "E12345678" },
+    { signals: { label: "护照号码", name: "", id: "", placeholder: "", ariaLabel: "", autocomplete: "" }, value: "E12345678" },
+  ]);
+
+  assert.equal(entries.length, 1);
+  assert.equal(entries[0].category, "证件");
+  assert.equal(entries[0].canonicalKey, "护照号码");
+});
+
+test("valueSynonyms maps passport across Chinese and English option wordings", () => {
+  const organizer = loadOrganizer();
+  const synonyms = organizer.valueSynonyms("护照");
+
+  assert.ok(synonyms.includes("ordinarypassport"));
+  assert.ok(synonyms.includes("traveldocument"));
+  assert.ok(!synonyms.includes("passport"));
+  assert.ok(!synonyms.includes("diplomaticpassport"));
+  assert.ok(!synonyms.includes("护照"));
+  assert.equal(organizer.valueSynonyms("不存在的值").length, 0);
+});
+
+test("Schengen form fields group into travel and identity categories", () => {
+  const organizer = loadOrganizer();
+  const blank = { name: "", id: "", placeholder: "", ariaLabel: "", autocomplete: "" };
+  const entries = organizer.organizeEntries([
+    { signals: { ...blank, label: "Main purpose(s) of the journey" }, value: "旅游" },
+    { signals: { ...blank, label: "Number of entries requested" }, value: "多次" },
+    { signals: { ...blank, label: "Surname at birth (Former family name(s))" }, value: "王" },
+    { signals: { ...blank, label: "Member State of first entry" }, value: "法国" },
+    { signals: { ...blank, label: "Current occupation" }, value: "工程师" },
+  ]);
+
+  const byKey = Object.fromEntries(entries.map((e) => [e.canonicalKey, e.category]));
+  assert.equal(byKey["旅行目的"], "旅行");
+  assert.equal(byKey["入境次数"], "旅行");
+  assert.equal(byKey["出生时姓氏"], "身份信息");
+  assert.equal(byKey["首次入境国家"], "旅行");
+  assert.equal(byKey["职业"], "公司/工作");
+});
+
+test("valueSynonyms cover Schengen option wordings", () => {
+  const organizer = loadOrganizer();
+  assert.ok(organizer.valueSynonyms("旅游").includes("tourism"));
+  assert.ok(organizer.valueSynonyms("多次").includes("multipleentries"));
+  assert.ok(organizer.valueSynonyms("本人承担").includes("bytheapplicanthimselfherself"));
+  assert.ok(organizer.valueSynonyms("法国").includes("france"));
+  assert.ok(organizer.valueSynonyms("丧偶").includes("widower"));
+});
