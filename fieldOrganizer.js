@@ -406,6 +406,110 @@
       canonicalKeyEn: "Available start date",
       aliases: ["到岗时间", "入职时间", "start date", "available start date", "earliest start date", "date available", "availability"],
     },
+    {
+      category: "公司/工作",
+      canonicalKey: "工作许可",
+      canonicalKeyEn: "Work authorization",
+      choiceSafe: true,
+      aliases: ["工作许可", "合法工作资格", "authorized to work", "legally authorized to work", "eligible to work", "right to work", "work authorization", "work eligibility", "permission to work", "are you legally authorized to work in the country where this role is based", "are you authorized to work in the country of employment"],
+    },
+    {
+      category: "公司/工作",
+      canonicalKey: "是否需要签证赞助",
+      canonicalKeyEn: "Visa sponsorship required",
+      choiceSafe: true,
+      aliases: ["是否需要签证赞助", "签证赞助", "visa sponsorship", "employment sponsorship", "immigration sponsorship", "require sponsorship", "requires sponsorship", "need sponsorship", "will you now or in the future require visa sponsorship", "will you require sponsorship for employment", "do you require employer sponsorship", "will you need the company to sponsor a work visa"],
+    },
+    {
+      category: "公司/工作",
+      canonicalKey: "是否愿意搬迁",
+      canonicalKeyEn: "Willing to relocate",
+      choiceSafe: true,
+      aliases: ["是否愿意搬迁", "愿意异地工作", "willing to relocate", "open to relocation", "relocation willingness", "are you willing to relocate", "would you relocate for this role"],
+    },
+    {
+      category: "公司/工作",
+      canonicalKey: "办公室出勤意愿",
+      canonicalKeyEn: "Office attendance",
+      choiceSafe: true,
+      aliases: ["办公室出勤意愿", "到办公室工作", "office attendance", "work from the office", "work in the office", "onsite attendance", "on-site attendance", "are you willing to work from our office", "are you willing to work 5 days a week from our office", "comfortable working onsite"],
+    },
+    {
+      category: "公司/工作",
+      canonicalKey: "工作模式偏好",
+      canonicalKeyEn: "Work arrangement preference",
+      aliases: ["工作模式偏好", "办公模式", "work arrangement", "work arrangement preference", "workplace preference", "remote preference", "preferred work model", "remote hybrid or onsite", "remote hybrid or on-site"],
+    },
+    {
+      category: "公司/工作",
+      canonicalKey: "通知期",
+      canonicalKeyEn: "Notice period",
+      aliases: ["通知期", "离职通知期", "notice period", "current notice period", "required notice", "how much notice do you need to give", "when can you start after accepting an offer"],
+    },
+    {
+      category: "公司/工作",
+      canonicalKey: "当前薪资",
+      canonicalKeyEn: "Current salary",
+      aliases: ["当前薪资", "目前薪资", "现有薪酬", "current salary", "current compensation", "present salary", "current total compensation"],
+    },
+    {
+      category: "公司/工作",
+      canonicalKey: "简历",
+      canonicalKeyEn: "Resume / CV",
+      aliases: ["简历", "个人简历", "resume", "résumé", "cv", "curriculum vitae", "upload resume", "upload cv", "resume attachment", "resume file"],
+    },
+    {
+      category: "公司/工作",
+      canonicalKey: "求职信",
+      canonicalKeyEn: "Cover letter",
+      aliases: ["求职信", "自荐信", "cover letter", "motivation letter", "letter of motivation", "supporting statement"],
+    },
+    {
+      category: "公司/工作",
+      canonicalKey: "招聘来源",
+      canonicalKeyEn: "Application source",
+      aliases: ["招聘来源", "职位来源", "how did you hear about us", "how did you hear about this role", "how did you find this job", "application source", "source of application", "referral source"],
+    },
+    {
+      category: "公司/工作",
+      canonicalKey: "推荐人",
+      canonicalKeyEn: "Referrer",
+      aliases: ["推荐人", "内推人", "employee referral", "referrer", "referring employee", "referral name", "who referred you"],
+    },
+    {
+      category: "身份信息",
+      canonicalKey: "代词",
+      canonicalKeyEn: "Pronouns",
+      aliases: ["代词", "称谓代词", "pronouns", "preferred pronouns", "personal pronouns"],
+    },
+    {
+      category: "身份信息",
+      canonicalKey: "残障自愿披露",
+      canonicalKeyEn: "Disability disclosure",
+      choiceSafe: true,
+      aliases: ["残障自愿披露", "残疾状况", "disability status", "voluntary self-identification of disability", "do you have a disability", "identify as an individual with a disability"],
+    },
+    {
+      category: "身份信息",
+      canonicalKey: "退伍军人身份",
+      canonicalKeyEn: "Veteran status",
+      choiceSafe: true,
+      aliases: ["退伍军人身份", "veteran status", "protected veteran", "protected veteran status", "are you a protected veteran", "veteran self-identification"],
+    },
+    {
+      category: "其他",
+      canonicalKey: "招聘联系许可",
+      canonicalKeyEn: "Recruiting contact consent",
+      choiceSafe: true,
+      aliases: ["招聘联系许可", "接受招聘联系", "contact me about jobs", "contact me about future opportunities", "join the talent community", "keep my details for future roles", "may we contact you about other roles"],
+    },
+    {
+      category: "其他",
+      canonicalKey: "营销联系许可",
+      canonicalKeyEn: "Marketing consent",
+      choiceSafe: true,
+      aliases: ["营销联系许可", "接受营销联系", "marketing consent", "marketing communications", "promotional communications", "receive marketing emails", "contact me for marketing purposes"],
+    },
   ];
 
   function norm(text) {
@@ -592,8 +696,6 @@
 
   function matchDefinition(entry, language = "zh") {
     const choiceDefinition = choiceQuestionDefinition(entry);
-    if (choiceDefinition) return choiceDefinition;
-
     const texts = signalsFor(entry);
     const normalizedTexts = texts.map(norm).filter(Boolean);
     let best = null;
@@ -614,12 +716,13 @@
         best = definition;
       }
     }
-    if (best) {
+    if (best && (!choiceDefinition || best.choiceSafe)) {
       return {
         ...best,
         canonicalKey: language === "en" ? (best.canonicalKeyEn || best.canonicalKey) : best.canonicalKey,
       };
     }
+    if (choiceDefinition) return choiceDefinition;
     return {
       category: "其他",
       canonicalKey: entryDisplayKey(entry),

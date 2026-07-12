@@ -135,9 +135,53 @@ test("organizeEntries does not confuse visa sponsorship with contact consent", (
   ]);
 
   assert.equal(organized.length, 1);
-  assert.equal(organized[0].category, "其他");
-  assert.equal(organized[0].canonicalKey, question);
+  assert.equal(organized[0].category, "公司/工作");
+  assert.equal(organized[0].canonicalKey, "是否需要签证赞助");
   assert.equal(organized[0].choice.text, "Yes");
+});
+
+test("recruitment choice dictionary separates work authorization, sponsorship, relocation, and office attendance", () => {
+  const organizer = loadOrganizer();
+  const choice = { value: "yes", text: "Yes", index: 0 };
+  const entries = organizer.organizeEntries([
+    { signals: { question: "Are you legally authorized to work in the country where this role is based?" }, choice, value: "yes" },
+    { signals: { question: "Will you now or in the future require visa sponsorship?" }, choice, value: "yes" },
+    { signals: { question: "Would you relocate for this role?" }, choice, value: "yes" },
+    { signals: { question: "Are you willing to work 5 days a week from our office?" }, choice, value: "yes" },
+  ]);
+
+  const keys = entries.map((entry) => entry.canonicalKey).sort();
+  assert.equal(JSON.stringify(keys), JSON.stringify(["办公室出勤意愿", "工作许可", "是否愿意搬迁", "是否需要签证赞助"].sort()));
+  assert.ok(entries.every((entry) => entry.category === "公司/工作"));
+});
+
+test("recruitment consent dictionary keeps recruiting and marketing consent separate", () => {
+  const organizer = loadOrganizer();
+  const choice = { value: "yes", text: "Yes", index: 0 };
+  const entries = organizer.organizeEntries([
+    { signals: { question: "May we contact you about other roles?" }, choice, value: "yes" },
+    { signals: { question: "Would you like to receive marketing emails?" }, choice, value: "yes" },
+  ]);
+
+  const keys = entries.map((entry) => entry.canonicalKey).sort();
+  assert.equal(JSON.stringify(keys), JSON.stringify(["招聘联系许可", "营销联系许可"].sort()));
+});
+
+test("recruitment dictionary recognizes common text and file fields", () => {
+  const organizer = loadOrganizer();
+  const blank = { name: "", id: "", placeholder: "", ariaLabel: "", autocomplete: "" };
+  const entries = organizer.organizeEntries([
+    { signals: { ...blank, label: "Current notice period" }, value: "1 month" },
+    { signals: { ...blank, label: "Current total compensation" }, value: "£80,000" },
+    { signals: { ...blank, label: "Upload CV" }, value: "resume.pdf" },
+    { signals: { ...blank, label: "How did you hear about this role?" }, value: "LinkedIn" },
+  ]);
+
+  const keys = new Set(entries.map((entry) => entry.canonicalKey));
+  assert.ok(keys.has("通知期"));
+  assert.ok(keys.has("当前薪资"));
+  assert.ok(keys.has("简历"));
+  assert.ok(keys.has("招聘来源"));
 });
 
 test("organizeEntries preserves full semantic choice questions", () => {
