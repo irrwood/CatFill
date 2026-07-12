@@ -497,11 +497,8 @@ main {
 }
 
 .documentDropzone {
-  display: grid;
+  display: block;
   min-height: 128px;
-  place-items: center;
-  align-content: center;
-  gap: 5px;
   padding: 16px 12px;
   color: var(--muted);
   background: var(--sand);
@@ -519,7 +516,15 @@ main {
   pointer-events: none;
 }
 
-.documentDropzone svg {
+.documentEmptyState {
+  display: grid;
+  min-height: 94px;
+  place-items: center;
+  align-content: center;
+  gap: 5px;
+}
+
+.documentEmptyState svg {
   width: 26px;
   height: 26px;
   fill: none;
@@ -540,8 +545,13 @@ main {
 
 .documentDropzone.hasFile {
   color: var(--heading);
-  background: var(--surface);
+  background: var(--sand);
+  border-color: var(--success);
   border-style: solid;
+}
+
+.documentDropzone.hasFile .documentEmptyState {
+  display: none;
 }
 
 .documentDropLabel {
@@ -553,6 +563,60 @@ main {
 .documentDropHint {
   color: var(--muted);
   font-size: 11px;
+  font-weight: 400;
+}
+
+.documentSelectedState {
+  display: none;
+}
+
+.documentDropzone.hasFile .documentSelectedState {
+  display: grid;
+  min-height: 94px;
+  grid-template-columns: 34px minmax(0, 1fr);
+  align-content: center;
+  align-items: center;
+  gap: 4px 10px;
+  text-align: left;
+}
+
+.documentSelectedIcon {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  grid-row: 1;
+  place-items: center;
+  color: var(--surface);
+  background: var(--success);
+  border-radius: 50%;
+}
+
+.documentSelectedIcon svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2.2;
+}
+
+.documentSelectedCopy {
+  display: grid;
+  min-width: 0;
+  gap: 2px;
+}
+
+.documentSelectedCopy > small {
+  color: var(--success);
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.documentChangeFile {
+  grid-column: 2;
+  color: var(--muted);
+  font-size: 10px;
 }
 
 .documentActions {
@@ -566,12 +630,20 @@ main {
 }
 
 .documentFileName {
+  display: block;
   max-width: 100%;
   overflow: hidden;
-  color: var(--muted);
-  font-size: 12px;
+  color: var(--heading);
+  font-size: 13px;
+  font-weight: 750;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.documentFileMeta {
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 500;
 }
 
 .providerHint {

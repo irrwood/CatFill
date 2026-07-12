@@ -732,7 +732,16 @@ function setDocumentFile(file) {
   const zone = $("documentDropzone");
   zone.classList.toggle("hasFile", Boolean(file));
   $("documentFileName").textContent = file ? file.name : "";
+  $("documentFileMeta").textContent = file
+    ? `${(file.name.split(".").pop() || "FILE").toUpperCase()} · ${formatFileSize(file.size)}`
+    : "";
   $("analyzeDocumentBtn").disabled = !file;
+}
+
+function formatFileSize(bytes) {
+  if (!Number.isFinite(bytes) || bytes <= 0) return "0 KB";
+  if (bytes < 1024 * 1024) return `${Math.max(1, Math.round(bytes / 1024))} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 }
 
 $("documentFile").onchange = () => setDocumentFile($("documentFile").files?.[0]);

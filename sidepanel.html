@@ -112,14 +112,26 @@
           <div class="documentImport">
           <label id="documentDropzone" class="documentDropzone" tabindex="0">
             <input id="documentFile" type="file" accept="application/pdf,.pdf,text/plain,.txt,text/csv,.csv,application/vnd.ms-excel,.xls,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,.xlsx,application/vnd.ms-excel.sheet.macroEnabled.12,.xlsm,application/vnd.ms-excel.sheet.binary.macroEnabled.12,.xlsb,image/jpeg,.jpg,.jpeg,image/png,.png,image/webp,.webp" />
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M12 16V4" />
-              <path d="m7 9 5-5 5 5" />
-              <path d="M5 20h14" />
-            </svg>
-            <span class="documentDropLabel" data-i18n="fileDropTitle">选择文件，或拖到这里</span>
-            <span class="documentDropHint" data-i18n="fileDropHint">支持 PDF、Excel、图片和 TXT</span>
-            <span id="documentFileName" class="documentFileName"></span>
+            <span class="documentEmptyState">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 16V4" />
+                <path d="m7 9 5-5 5 5" />
+                <path d="M5 20h14" />
+              </svg>
+              <strong class="documentDropLabel" data-i18n="fileDropTitle">选择文件，或拖到这里</strong>
+              <small class="documentDropHint" data-i18n="fileDropHint">支持 PDF、Excel、图片和 TXT</small>
+            </span>
+            <span class="documentSelectedState">
+              <span class="documentSelectedIcon" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5" /></svg>
+              </span>
+              <span class="documentSelectedCopy">
+                <small data-i18n="selectedFile">已选择文件</small>
+                <strong id="documentFileName" class="documentFileName" aria-live="polite"></strong>
+                <span id="documentFileMeta" class="documentFileMeta"></span>
+              </span>
+              <small class="documentChangeFile" data-i18n="changeFile">点击更换</small>
+            </span>
           </label>
           <div class="documentActions">
             <button id="analyzeDocumentBtn" class="primary actionStatusButton" type="button" disabled>
