@@ -23,7 +23,8 @@ test("interface translations switch between Chinese and English", () => {
   i18n.setLocale();
   assert.equal(i18n.locale, "en");
   assert.equal(i18n.t("organizerTab"), "My details");
-  assert.equal(i18n.t("localFill"), "Fill this page");
+  assert.equal(i18n.t("localFill"), "Quick local fill");
+  assert.equal(i18n.t("aiFill"), "Safer AI fill");
   assert.equal(i18n.t("openOrganizer"), "Manage my details");
   assert.equal(i18n.category("联系方式"), "Contact");
   assert.equal(i18n.category("旅行"), "Travel");
@@ -33,7 +34,8 @@ test("interface translations switch between Chinese and English", () => {
 
   i18n.setLocale("zh");
   assert.equal(i18n.t("organizerTab"), "我的资料");
-  assert.equal(i18n.t("localFill"), "填写当前页面");
+  assert.equal(i18n.t("localFill"), "快速本地填写");
+  assert.equal(i18n.t("aiFill"), "AI 安全填写");
   assert.equal(i18n.t("openOrganizer"), "管理我的资料");
   assert.equal(i18n.category("联系方式"), "联系方式");
   assert.equal(i18n.category("旅行"), "旅行");

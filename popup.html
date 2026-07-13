@@ -44,12 +44,16 @@
   </section>
 
   <section class="actionPanel">
-    <button id="fillBtn" class="primaryAction">
+    <button id="aiFillBtn" class="primaryAction">
       <span class="actionIcon">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 9-12h-7l1-8Z" /></svg>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 9h10a3 3 0 0 1 3 3v5a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3v-5a3 3 0 0 1 3-3Z" /><path d="M12 5v4" /><path d="M9 14h.01M15 14h.01" /><path d="M10 17h4" /></svg>
       </span>
-      <span><strong data-i18n="localFill">填写当前页面</strong><small data-i18n="fillHint">使用当前档案中的已保存资料</small></span>
+      <span><strong data-i18n="aiFill">AI 安全填写</strong><small data-i18n="aiFillHint">先理解问题和格式，再进行填写</small></span>
       <svg class="actionArrow" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6" /></svg>
+    </button>
+    <button id="fillBtn" class="secondaryAction localAction">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 9-12h-7l1-8Z" /></svg>
+      <span><strong data-i18n="localFill">快速本地填写</strong><small data-i18n="fillHint">不调用 AI，仅适合字段明确的表单</small></span>
     </button>
     <button id="scanBtn" class="secondaryAction">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4h7l4 4v12H7V4Z" /><path d="M14 4v5h5" /><path d="M10 13h5M10 16h5" /></svg>
@@ -66,7 +70,6 @@
       <svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5" /></svg>
     </span>
     <div class="resultCopy"><strong id="statusTitle"></strong><small id="statusDetail"></small></div>
-    <button id="aiFillBtn" class="resultAction hidden" type="button" data-i18n="aiContinue">用 AI 继续</button>
   </section>
 
   <section class="sidePanelSection">

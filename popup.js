@@ -8,7 +8,7 @@ const i18n = globalThis.CatFillI18n;
 let state = { profiles: {}, activeProfileId: null, settings: {} };
 let activityTimer = null;
 
-function setStatus(text, isErr = false, detail = "", showAiAction = false) {
+function setStatus(text, isErr = false, detail = "") {
   const el = $("status");
   if (!text) {
     el.className = "resultPanel hidden";
@@ -16,8 +16,6 @@ function setStatus(text, isErr = false, detail = "", showAiAction = false) {
   }
   $("statusTitle").textContent = text;
   $("statusDetail").textContent = detail;
-  $("aiFillBtn").textContent = i18n.t(hasAiKey() ? "aiContinue" : "setupAi");
-  $("aiFillBtn").classList.toggle("hidden", !showAiAction);
   el.className = `resultPanel${isErr ? " err" : ""}`;
 }
 
@@ -26,7 +24,7 @@ function showFillActivity(text) {
   $("fillActivityText").textContent = text;
   $("fillActivity").className = "fillActivity";
   document.querySelector(".actionPanel").setAttribute("aria-busy", "true");
-  [$("fillBtn"), $("scanBtn")].forEach((button) => { button.disabled = true; });
+  [$("aiFillBtn"), $("fillBtn"), $("scanBtn")].forEach((button) => { button.disabled = true; });
 }
 
 function finishFillActivity(text) {
@@ -39,7 +37,7 @@ function hideFillActivity() {
   clearTimeout(activityTimer);
   $("fillActivity").className = "fillActivity hidden";
   document.querySelector(".actionPanel").removeAttribute("aria-busy");
-  [$("fillBtn"), $("scanBtn")].forEach((button) => { button.disabled = false; });
+  [$("aiFillBtn"), $("fillBtn"), $("scanBtn")].forEach((button) => { button.disabled = false; });
   render();
 }
 
@@ -89,10 +87,12 @@ function render() {
   const entryCount = activeProfile()?.entries?.length || 0;
   $("profileMeta").textContent = i18n.t("savedDetailCount", { count: entryCount });
   $("emptyProfile").classList.toggle("hidden", entryCount > 0);
+  $("aiFillBtn").classList.toggle("hidden", entryCount === 0);
   $("fillBtn").classList.toggle("hidden", entryCount === 0);
   document.querySelector(".actionPanel").classList.toggle("empty", entryCount === 0);
   $("scanBtn").classList.toggle("emptyPrimary", entryCount === 0);
   $("fillBtn").disabled = entryCount === 0;
+  $("aiFillBtn").disabled = entryCount === 0;
 }
 
 function hasAiKey() {
@@ -240,7 +240,7 @@ $("fillBtn").onclick = async () => {
     const unmatched = Math.max(0, total - filled);
     const result = filled ? i18n.t("fillResult", { filled, total }) : i18n.t("fillNone");
     const detail = unmatched ? i18n.t("unmatchedCount", { count: unmatched }) : i18n.t("fillComplete");
-    setStatus(result, false, detail, unmatched > 0);
+    setStatus(result, false, `${i18n.t("localFillUsed")} ${detail}`);
     if (filled) finishFillActivity(result);
     else hideFillActivity();
   } catch (e) {
