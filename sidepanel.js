@@ -196,6 +196,9 @@ function renderSettings() {
   $("theme").value = state.settings.theme;
   const hasApiKey = Boolean(state.settings.apiKeys?.[providerId]?.trim());
   $("aiSetupGuide").classList.toggle("hidden", hasApiKey);
+  const connectionState = $("aiConnectionState");
+  connectionState.classList.toggle("connected", hasApiKey);
+  connectionState.querySelector("strong").textContent = i18n.t(hasApiKey ? "aiConnected" : "aiNotConnected", { provider: provider.name });
   $("setupProviderStep").textContent = i18n.t("setupProviderStep", { provider: provider.name });
   $("getApiKeyLink").href = provider.keyUrl;
   $("providerHint").textContent = i18n.t("apiKeyLocal", { provider: provider.name, hint: provider.hint[i18n.locale] || provider.hint.zh });
@@ -226,6 +229,12 @@ function switchTab(panelId) {
   document.querySelectorAll(".tabPanel").forEach((panel) => {
     panel.classList.toggle("hidden", panel.id !== panelId);
   });
+  updateOrganizerAction(panelId);
+}
+
+function updateOrganizerAction(panelId = document.querySelector(".tabButton.active")?.dataset.tab) {
+  const hasEntries = Boolean(activeProfile()?.entries?.length);
+  $("organizeBtn").classList.toggle("hidden", panelId !== "organizerPanel" || !hasEntries);
 }
 
 function renderSuggestion() {
@@ -252,7 +261,28 @@ function renderGroups() {
 
   const sourceEntries = currentEntries();
   if (!sourceEntries.length) {
-    box.append(empty(i18n.t("noEntries")));
+    const emptyState = empty(i18n.t("noEntries"));
+    emptyState.classList.add("profileEmptyState");
+    const actions = document.createElement("div");
+    actions.className = "emptyActions";
+    const importButton = document.createElement("button");
+    importButton.className = "primary";
+    importButton.textContent = i18n.t("importDetailsAction");
+    importButton.onclick = () => {
+      switchTab("manualPanel");
+      switchAddMode("documentEntryMode");
+    };
+    const manualButton = document.createElement("button");
+    manualButton.className = "ghostButton";
+    manualButton.textContent = i18n.t("manualAddAction");
+    manualButton.onclick = () => {
+      switchTab("manualPanel");
+      switchAddMode("manualEntryMode");
+    };
+    actions.append(importButton, manualButton);
+    emptyState.appendChild(actions);
+    box.append(emptyState);
+    updateOrganizerAction();
     return;
   }
 
@@ -276,6 +306,7 @@ function renderGroups() {
     groupEl.append(header, entriesCard);
     box.appendChild(groupEl);
   }
+  updateOrganizerAction();
 }
 
 function currentEntries() {

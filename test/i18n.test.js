@@ -22,7 +22,9 @@ test("interface translations switch between Chinese and English", () => {
   const i18n = loadI18n("en-GB");
   i18n.setLocale();
   assert.equal(i18n.locale, "en");
-  assert.equal(i18n.t("organizerTab"), "Fields");
+  assert.equal(i18n.t("organizerTab"), "My details");
+  assert.equal(i18n.t("localFill"), "Fill this page");
+  assert.equal(i18n.t("openOrganizer"), "Manage my details");
   assert.equal(i18n.category("联系方式"), "Contact");
   assert.equal(i18n.category("旅行"), "Travel");
   assert.equal(i18n.t("setupProviderStep", { provider: "OpenAI" }), "Use OpenAI");
@@ -30,7 +32,9 @@ test("interface translations switch between Chinese and English", () => {
   assert.equal(i18n.t("fileDropTitle"), "Choose a file or drop it here");
 
   i18n.setLocale("zh");
-  assert.equal(i18n.t("organizerTab"), "字段整理");
+  assert.equal(i18n.t("organizerTab"), "我的资料");
+  assert.equal(i18n.t("localFill"), "填写当前页面");
+  assert.equal(i18n.t("openOrganizer"), "管理我的资料");
   assert.equal(i18n.category("联系方式"), "联系方式");
   assert.equal(i18n.category("旅行"), "旅行");
   assert.equal(i18n.t("setupProviderStep", { provider: "OpenAI" }), "使用 OpenAI");

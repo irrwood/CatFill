@@ -8,10 +8,17 @@ const i18n = globalThis.CatFillI18n;
 let state = { profiles: {}, activeProfileId: null, settings: {} };
 let activityTimer = null;
 
-function setStatus(text, isErr = false) {
+function setStatus(text, isErr = false, detail = "", showAiAction = false) {
   const el = $("status");
-  el.textContent = text;
-  el.className = isErr ? "err" : "";
+  if (!text) {
+    el.className = "resultPanel hidden";
+    return;
+  }
+  $("statusTitle").textContent = text;
+  $("statusDetail").textContent = detail;
+  $("aiFillBtn").textContent = i18n.t(hasAiKey() ? "aiContinue" : "setupAi");
+  $("aiFillBtn").classList.toggle("hidden", !showAiAction);
+  el.className = `resultPanel${isErr ? " err" : ""}`;
 }
 
 function showFillActivity(text) {
@@ -19,7 +26,7 @@ function showFillActivity(text) {
   $("fillActivityText").textContent = text;
   $("fillActivity").className = "fillActivity";
   document.querySelector(".actionPanel").setAttribute("aria-busy", "true");
-  document.querySelectorAll(".actionCard").forEach((button) => { button.disabled = true; });
+  [$("fillBtn"), $("scanBtn")].forEach((button) => { button.disabled = true; });
 }
 
 function finishFillActivity(text) {
@@ -32,7 +39,8 @@ function hideFillActivity() {
   clearTimeout(activityTimer);
   $("fillActivity").className = "fillActivity hidden";
   document.querySelector(".actionPanel").removeAttribute("aria-busy");
-  document.querySelectorAll(".actionCard").forEach((button) => { button.disabled = false; });
+  [$("fillBtn"), $("scanBtn")].forEach((button) => { button.disabled = false; });
+  render();
 }
 
 // ---------- 存储 ----------
@@ -78,6 +86,18 @@ function render() {
     opt.selected = id === state.activeProfileId;
     sel.appendChild(opt);
   }
+  const entryCount = activeProfile()?.entries?.length || 0;
+  $("profileMeta").textContent = i18n.t("savedDetailCount", { count: entryCount });
+  $("emptyProfile").classList.toggle("hidden", entryCount > 0);
+  $("fillBtn").classList.toggle("hidden", entryCount === 0);
+  document.querySelector(".actionPanel").classList.toggle("empty", entryCount === 0);
+  $("scanBtn").classList.toggle("emptyPrimary", entryCount === 0);
+  $("fillBtn").disabled = entryCount === 0;
+}
+
+function hasAiKey() {
+  const provider = state.settings?.provider || "anthropic";
+  return Boolean(state.settings?.apiKeys?.[provider]?.trim() || state.settings?.apiKey?.trim());
 }
 
 // ---------- 与页面通信 ----------
@@ -204,7 +224,7 @@ $("scanBtn").onclick = async () => {
     await save();
     render();
     const mode = result.usedAi ? i18n.t("aiOrganizedPrefix") : "";
-    setStatus(i18n.t("scanResult", { mode, fields: fields.length, added, updated }));
+    setStatus(i18n.t("learnResult", { added, updated }), false, mode || i18n.t("savedLocally"));
   } catch (e) {
     setStatus(e.message, true);
   }
@@ -217,8 +237,10 @@ $("fillBtn").onclick = async () => {
     const { filled, total } = await withContentScript("fill", {
       entries: activeProfile().entries,
     });
-    const result = i18n.t("fillResult", { filled, total });
-    setStatus(result);
+    const unmatched = Math.max(0, total - filled);
+    const result = filled ? i18n.t("fillResult", { filled, total }) : i18n.t("fillNone");
+    const detail = unmatched ? i18n.t("unmatchedCount", { count: unmatched }) : i18n.t("fillComplete");
+    setStatus(result, false, detail, unmatched > 0);
     if (filled) finishFillActivity(result);
     else hideFillActivity();
   } catch (e) {
@@ -228,6 +250,10 @@ $("fillBtn").onclick = async () => {
 };
 
 $("aiFillBtn").onclick = async () => {
+  if (!hasAiKey()) {
+    await openSidePanel("settingsPanel");
+    return;
+  }
   try {
     setStatus(i18n.t("aiAnalyzing"));
     showFillActivity(i18n.t("aiAnalyzing"));
@@ -244,7 +270,7 @@ $("aiFillBtn").onclick = async () => {
       frameId,
     });
     const result = filled ? i18n.t("aiFillVerified", { filled }) : i18n.t("aiFillNone");
-    setStatus(result);
+    setStatus(result, false, filled ? i18n.t("aiFillComplete") : i18n.t("noMatchingDetails"));
     if (filled) finishFillActivity(result);
     else hideFillActivity();
   } catch (e) {
@@ -270,6 +296,7 @@ async function openSidePanel(targetTab = "organizerPanel") {
 
 $("openSidePanelBtn").onclick = () => openSidePanel("organizerPanel");
 $("settingsBtn").onclick = () => openSidePanel("settingsPanel");
+$("emptyImportBtn").onclick = () => openSidePanel("manualPanel");
 
 // ---------- 联系人管理 ----------
 $("profileSelect").onchange = async (e) => {

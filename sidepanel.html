@@ -20,7 +20,7 @@
             <path d="M20 6 9 17l-5-5" />
           </svg>
         </button>
-        <button id="organizeBtn" class="primary actionStatusButton">
+        <button id="organizeBtn" class="primary actionStatusButton hidden">
           <span data-i18n="organize">AI 整理</span>
           <svg class="spinIcon" viewBox="0 0 24 24" aria-hidden="true">
             <path d="M20 6v5h-5" />
@@ -154,7 +154,6 @@
       <section class="settingsCard">
         <div class="settingsHeader">
           <div>
-            <span class="eyebrow" data-i18n="settingsTab">设置</span>
             <h2 data-i18n="aiSettings">AI 设置</h2>
           </div>
           <button id="saveSettingsBtn" class="ghostButton" data-i18n="save">保存</button>
@@ -165,20 +164,6 @@
             <h3 id="aiSetupTitle" data-i18n="setupTitle">让 CatFill 读懂复杂表单</h3>
             <p data-i18n="setupIntro">使用你自己的 API Key，获得更准确的语义判断和格式转换。</p>
           </div>
-          <ul class="setupBenefits">
-            <li>
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 1.2 3.8L17 8l-3.8 1.2L12 13l-1.2-3.8L7 8l3.8-1.2L12 3Z" /><path d="m18 14 .7 2.3L21 17l-2.3.7L18 20l-.7-2.3L15 17l2.3-.7L18 14Z" /></svg>
-              <span><strong data-i18n="setupSemanticTitle">理解复杂问题</strong><small data-i18n="setupSemanticText">识别换种问法的字段和选择题语义。</small></span>
-            </li>
-            <li>
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h2M10 17h10" /><circle cx="16" cy="7" r="2" /><circle cx="8" cy="17" r="2" /></svg>
-              <span><strong data-i18n="setupFormatTitle">按要求转换格式</strong><small data-i18n="setupFormatText">处理姓名拆分、电话国家码和日期格式。</small></span>
-            </li>
-            <li>
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h8l4 4v14H6V3Z" /><path d="M14 3v5h5M9 13h6M9 17h4" /></svg>
-              <span><strong data-i18n="setupFilesTitle">整理资料与文件</strong><small data-i18n="setupFilesText">合并重复字段，并从文档或图片提取资料。</small></span>
-            </li>
-          </ul>
           <ol class="setupSteps" data-i18n-title="setupStepsLabel">
             <li><span>1</span><p id="setupProviderStep"></p></li>
             <li><span>2</span><p data-i18n="setupCreateStep">在官方控制台创建 API Key</p></li>
@@ -200,28 +185,39 @@
           <label><span id="apiKeyLabel">API Key</span>
             <input id="apiKey" type="password" autocomplete="off" />
           </label>
-          <label><span data-i18n="model">模型</span>
-            <input id="model" list="modelOptions" autocomplete="off" />
-            <datalist id="modelOptions"></datalist>
-          </label>
-          <label class="toggleRow">
-            <span>
-              <strong data-i18n="learnWithAi">学习已填内容时使用 AI</strong>
-              <small data-i18n="learnWithAiHint">开启后会用 AI 清洗字段标题、合并中英文同义字段，并整理保存的值。</small>
-            </span>
-            <input id="aiLearnEnabled" type="checkbox" />
-          </label>
-          <label><span data-i18n="instruction">填表补充指令（可选）</span>
-            <textarea id="aiInstruction" rows="3" data-i18n-placeholder="instructionPlaceholder" placeholder="例：求职表的开放问题请基于我保存的简历要点用第一人称回答，控制在 100 字以内；薪资期望一律填「面议」。"></textarea>
-            <small data-i18n="instructionHint">AI 智能填充时会附加给模型，与默认规则冲突时以这里为准。</small>
-          </label>
+          <p id="aiConnectionState" class="connectionState"><span aria-hidden="true"></span><strong></strong></p>
+          <details class="settingsAdvanced">
+            <summary data-i18n="advancedAiSettings">高级 AI 设置</summary>
+            <div class="advancedSettingsGrid">
+              <label><span data-i18n="model">模型</span>
+                <input id="model" list="modelOptions" autocomplete="off" />
+                <datalist id="modelOptions"></datalist>
+              </label>
+              <label class="toggleRow">
+                <span>
+                  <strong data-i18n="learnWithAi">学习已填内容时使用 AI</strong>
+                  <small data-i18n="learnWithAiHint">开启后会用 AI 清洗字段标题、合并中英文同义字段，并整理保存的值。</small>
+                </span>
+                <input id="aiLearnEnabled" type="checkbox" />
+              </label>
+              <label><span data-i18n="instruction">填表补充指令（可选）</span>
+                <textarea id="aiInstruction" rows="3" data-i18n-placeholder="instructionPlaceholder" placeholder="例：求职表的开放问题请基于我保存的简历要点用第一人称回答，控制在 100 字以内；薪资期望一律填「面议」。"></textarea>
+                <small data-i18n="instructionHint">AI 智能填充时会附加给模型，与默认规则冲突时以这里为准。</small>
+              </label>
+            </div>
+          </details>
         </div>
-          <label><span data-i18n="language">界面语言</span>
-          <select id="language"><option value="zh" data-i18n="chinese">中文</option><option value="en" data-i18n="english">English</option></select>
-        </label>
-        <label><span data-i18n="theme">外观</span>
-          <select id="theme"><option value="system" data-i18n="themeSystem">跟随系统</option><option value="light" data-i18n="themeLight">浅色</option><option value="dark" data-i18n="themeDark">夜间</option></select>
-        </label>
+        <section class="generalSettings">
+          <h3 data-i18n="generalSettings">通用设置</h3>
+          <div class="generalSettingsGrid">
+            <label><span data-i18n="language">界面语言</span>
+              <select id="language"><option value="zh" data-i18n="chinese">中文</option><option value="en" data-i18n="english">English</option></select>
+            </label>
+            <label><span data-i18n="theme">外观</span>
+              <select id="theme"><option value="system" data-i18n="themeSystem">跟随系统</option><option value="light" data-i18n="themeLight">浅色</option><option value="dark" data-i18n="themeDark">夜间</option></select>
+            </label>
+          </div>
+        </section>
         <p class="providerHint" id="providerHint">API Key 只保存在本机浏览器里。</p>
       </section>
     </section>

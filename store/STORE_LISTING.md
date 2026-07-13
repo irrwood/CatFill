@@ -3,7 +3,7 @@
 ## Identity
 
 - Name: CatFill: AI Form Autofill
-- Version: 0.2.13
+- Version: 0.3.0
 - Category: Productivity
 - Single purpose: Save user-approved form information locally and fill similar web forms on the user's command.
 - Privacy policy URL: Publish `PRIVACY.md` at a public HTTPS URL before submission. Replace this line with that final URL.

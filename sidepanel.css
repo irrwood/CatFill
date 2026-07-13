@@ -135,10 +135,8 @@ main {
 .workspaceBar {
   display: grid;
   gap: 12px;
-  padding: 12px;
-  background: var(--surface);
-  border-radius: 10px;
-  box-shadow: inset 0 0 0 1px var(--stone);
+  padding: 2px 0 0;
+  background: transparent;
 }
 
 .profileControl {
@@ -187,6 +185,73 @@ main {
   background: var(--surface);
   border-radius: 10px;
   box-shadow: inset 0 0 0 1px var(--stone);
+}
+
+.connectionState {
+  display: flex;
+  min-height: 32px;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 9px;
+  color: var(--muted);
+  background: var(--sand);
+  border-radius: 7px;
+  font-size: 11px;
+}
+
+.connectionState > span {
+  width: 8px;
+  height: 8px;
+  flex: 0 0 auto;
+  background: var(--muted);
+  border-radius: 50%;
+}
+
+.connectionState.connected { color: var(--success); }
+.connectionState.connected > span { background: var(--success); }
+
+.settingsAdvanced {
+  padding-top: 9px;
+  border-top: 1px solid var(--stone);
+}
+
+.settingsAdvanced summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--body);
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 750;
+  list-style: none;
+}
+
+.settingsAdvanced summary::-webkit-details-marker { display: none; }
+.settingsAdvanced summary::after { content: "+"; color: var(--muted); font-size: 17px; font-weight: 500; }
+.settingsAdvanced[open] summary::after { content: "−"; }
+
+.advancedSettingsGrid {
+  display: grid;
+  gap: 10px;
+  padding-top: 10px;
+}
+
+.generalSettings {
+  display: grid;
+  gap: 9px;
+  padding-top: 12px;
+  border-top: 1px solid var(--stone);
+}
+
+.generalSettings h3 {
+  color: var(--heading);
+  font-size: 13px;
+}
+
+.generalSettingsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
 }
 
 .settingsHeader,
@@ -1045,6 +1110,26 @@ label {
   background: var(--surface);
   border-radius: 10px;
   box-shadow: inset 0 0 0 1px var(--stone);
+}
+
+.profileEmptyState {
+  display: grid;
+  gap: 13px;
+  padding: 34px 18px;
+  color: var(--muted);
+  background: transparent;
+  box-shadow: none;
+}
+
+.emptyActions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.emptyActions button {
+  min-height: 36px;
+  justify-content: center;
 }
 
 .hidden { display: none; }
