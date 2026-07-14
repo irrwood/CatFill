@@ -65,6 +65,23 @@
     </div>
   </section>
 
+  <section id="companyResearch" class="companyResearch hidden" aria-live="polite">
+    <div class="companyIdentity">
+      <span class="companyMark" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path d="M4 21V7l8-4 8 4v14" /><path d="M9 21v-5h6v5M8 9h.01M12 9h.01M16 9h.01M8 12h.01M12 12h.01M16 12h.01" /></svg>
+      </span>
+      <span><small data-i18n="applyingTo">正在申请</small><strong id="detectedCompany"></strong></span>
+    </div>
+    <div class="companyLinks">
+      <a id="linkedinCompanyLink" target="_blank" rel="noreferrer" data-i18n-title="viewOnLinkedIn">
+        <span class="linkedinBadge" aria-hidden="true">in</span><span>LinkedIn</span>
+      </a>
+      <a id="glassdoorCompanyLink" target="_blank" rel="noreferrer" data-i18n-title="viewOnGlassdoor">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4h10v15H7z" /><path d="M10 8h4M10 11h4M10 14h4" /></svg><span>Glassdoor</span>
+      </a>
+    </div>
+  </section>
+
   <section id="status" class="resultPanel hidden" aria-live="polite">
     <span class="resultIcon" aria-hidden="true">
       <svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5" /></svg>
@@ -80,6 +97,7 @@
     </button>
   </section>
 
+  <script src="companyDetector.js"></script>
   <script src="i18n.js"></script>
   <script src="popup.js"></script>
 </body>

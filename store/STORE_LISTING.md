@@ -3,7 +3,7 @@
 ## Identity
 
 - Name: CatFill: AI Form Autofill
-- Version: 0.3.1
+- Version: 0.3.2
 - Category: Productivity
 - Single purpose: Save user-approved form information locally and fill similar web forms on the user's command.
 - Privacy policy URL: Publish `PRIVACY.md` at a public HTTPS URL before submission. Replace this line with that final URL.
@@ -19,6 +19,7 @@ CatFill 帮你把重复的网页填表工作留在自己的浏览器里。
 - 学习当前网页中已填写的表单资料，并保存在本机。
 - 在相似表单中一键本地匹配填充，支持文本、下拉、单选、多选和常见自定义控件。
 - 用侧边栏整理字段，合并中英文同义字段，按联系人管理资料。
+- 在招聘页面本地识别公司，并提供 LinkedIn 与 Glassdoor 查询入口。
 - 可选连接你自己的 AI API，用于理解不规则字段、复杂选择题和格式要求。
 - 可从 PDF、Excel、TXT 和图片中提取资料；PDF/Excel/TXT 先在本机解析，图片只会在你主动点击 AI 分析时发送给所选视觉模型。
 

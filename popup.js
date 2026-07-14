@@ -8,6 +8,18 @@ const i18n = globalThis.CatFillI18n;
 let state = { profiles: {}, activeProfileId: null, settings: {} };
 let activityTimer = null;
 
+function renderCompany(company) {
+  const panel = $("companyResearch");
+  if (!company?.name) {
+    panel.classList.add("hidden");
+    return;
+  }
+  $("detectedCompany").textContent = company.name;
+  $("linkedinCompanyLink").href = `https://www.linkedin.com/search/results/companies/?keywords=${encodeURIComponent(company.name)}`;
+  $("glassdoorCompanyLink").href = `https://www.glassdoor.com/Search/results.htm?keyword=${encodeURIComponent(company.name)}`;
+  panel.classList.remove("hidden");
+}
+
 function setStatus(text, isErr = false, detail = "") {
   const el = $("status");
   if (!text) {
@@ -108,11 +120,15 @@ async function withContentScript(action, payload = {}) {
     target: { tabId: tab.id, allFrames: true },
     files: ["fieldOrganizer.js"],
   });
+  const detectorFrames = await chrome.scripting.executeScript({
+    target: { tabId: tab.id, allFrames: true },
+    files: ["companyDetector.js"],
+  });
   const contentFrames = await chrome.scripting.executeScript({
     target: { tabId: tab.id, allFrames: true },
     files: ["content.js"],
   });
-  const frameIds = [...new Set([...organizerFrames, ...contentFrames].map((item) => item.frameId))];
+  const frameIds = [...new Set([...organizerFrames, ...detectorFrames, ...contentFrames].map((item) => item.frameId))];
   if (!frameIds.length) throw new Error(i18n.t("inaccessiblePage"));
 
   const sendToFrame = async (frameId, message) => {
@@ -145,10 +161,26 @@ async function withContentScript(action, payload = {}) {
     };
   }
 
-  const targetFrameId = payload.frameId ?? frameIds[0];
+  const targetFrameId = payload.frameId ?? (frameIds.includes(0) ? 0 : frameIds[0]);
   const { res } = await sendToFrame(targetFrameId, { action, ...payload });
   if (!res?.ok) throw new Error(res?.error || i18n.t("pageScriptFailed"));
   return res;
+}
+
+async function loadCompanyResearch() {
+  let fallback = null;
+  try {
+    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+    fallback = globalThis.CatFillCompanyDetector?.detectFromSignals({
+      url: tab?.url || "",
+      title: tab?.title || "",
+    }) || null;
+    renderCompany(fallback);
+    const result = await withContentScript("companyContext");
+    renderCompany(result.page?.company || fallback);
+  } catch {
+    renderCompany(fallback);
+  }
 }
 
 // 用信号去重：同一个字段再次扫描时更新值而不是重复添加
@@ -336,3 +368,4 @@ $("deleteProfileBtn").onclick = async () => {
 };
 
 load();
+loadCompanyResearch();

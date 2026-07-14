@@ -8,7 +8,7 @@ OUTPUT="$ROOT/dist/CatFill-$VERSION.zip"
 rm -f "$OUTPUT"
 cd "$ROOT"
 zip -qr "$OUTPUT" \
-  manifest.json background.js content.js fieldOrganizer.js i18n.js \
+  manifest.json background.js content.js companyDetector.js fieldOrganizer.js i18n.js \
   popup.html popup.css popup.js sidepanel.html sidepanel.css sidepanel.js \
   assets icons vendor _locales LICENSE THIRD_PARTY_NOTICES.md PRIVACY.md
 

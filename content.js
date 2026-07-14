@@ -487,10 +487,12 @@
 
   // 页面级上下文，给 AI 审题用
   function pageContext() {
+    const company = globalThis.CatFillCompanyDetector?.detectDocument(document, location.href) || null;
     return {
       url: location.href.slice(0, 300),
       title: (document.title || "").slice(0, 150),
       heading: cleanText(document.querySelector("h1")?.innerText || "").slice(0, 150),
+      company,
     };
   }
 
@@ -938,6 +940,8 @@
       try {
         if (msg.action === "scan") {
           sendResponse({ ok: true, fields: scan(), page: pageContext() });
+        } else if (msg.action === "companyContext") {
+          sendResponse({ ok: true, page: pageContext() });
         } else if (msg.action === "fill") {
           sendResponse({ ok: true, ...(await heuristicFill(msg.entries)) });
         } else if (msg.action === "applyAssignments") {
