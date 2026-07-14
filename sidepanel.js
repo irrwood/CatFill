@@ -151,6 +151,7 @@ function normalizeSettings(settings) {
     provider,
     language: settings.language || i18n.locale,
     theme: settings.theme || i18n.theme,
+    companyResearchEnabled: settings.companyResearchEnabled !== false,
     aiLearnEnabled: Boolean(settings.aiLearnEnabled),
     aiInstruction: settings.aiInstruction || "",
     apiKeys: { ...(settings.apiKeys || {}), ...(settings.apiKey ? { [provider]: settings.apiKey } : {}) },
@@ -194,6 +195,7 @@ function renderSettings() {
   $("aiInstruction").value = state.settings.aiInstruction || "";
   $("language").value = state.settings.language;
   $("theme").value = state.settings.theme;
+  $("companyResearchEnabled").checked = state.settings.companyResearchEnabled !== false;
   const hasApiKey = Boolean(state.settings.apiKeys?.[providerId]?.trim());
   $("aiSetupGuide").classList.toggle("hidden", hasApiKey);
   const connectionState = $("aiConnectionState");
@@ -860,6 +862,11 @@ $("theme").onchange = async () => {
   await chrome.storage.local.set({ settings: state.settings });
 };
 
+$("companyResearchEnabled").onchange = async () => {
+  state.settings.companyResearchEnabled = $("companyResearchEnabled").checked;
+  await chrome.storage.local.set({ settings: state.settings });
+};
+
 $("startApiSetupBtn").onclick = () => {
   $("apiKey").scrollIntoView({ behavior: "smooth", block: "center" });
   setTimeout(() => $("apiKey").focus(), 220);
@@ -874,6 +881,7 @@ $("saveSettingsBtn").onclick = async () => {
   state.settings.aiInstruction = $("aiInstruction").value.trim();
   state.settings.language = $("language").value;
   state.settings.theme = $("theme").value;
+  state.settings.companyResearchEnabled = $("companyResearchEnabled").checked;
   await chrome.storage.local.set({ settings: state.settings });
   renderSettings();
   setStatus(i18n.t("settingsSaved"), "ok");

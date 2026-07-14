@@ -254,6 +254,8 @@ main {
   gap: 8px;
 }
 
+.companyResearchToggle { margin-top: 1px; }
+
 .settingsHeader,
 .manualHeader {
   display: flex;

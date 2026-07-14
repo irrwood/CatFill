@@ -170,6 +170,11 @@ async function withContentScript(action, payload = {}) {
 async function loadCompanyResearch() {
   let fallback = null;
   try {
+    const { settings = {} } = await chrome.storage.local.get("settings");
+    if (settings.companyResearchEnabled === false) {
+      renderCompany(null);
+      return;
+    }
     const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
     fallback = globalThis.CatFillCompanyDetector?.detectFromSignals({
       url: tab?.url || "",

@@ -51,3 +51,11 @@ test("theme preference resolves system and explicit dark mode", () => {
   i18n.setTheme("system");
   assert.equal(i18n.theme, "system");
 });
+
+test("company research setting is translated in both interface languages", () => {
+  const i18n = loadI18n("en-US");
+  i18n.setLocale("en");
+  assert.equal(i18n.t("companyResearchSetting"), "Identify hiring companies");
+  i18n.setLocale("zh");
+  assert.equal(i18n.t("companyResearchSetting"), "识别招聘公司");
+});
