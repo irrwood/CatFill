@@ -3,7 +3,7 @@
 ## Identity
 
 - Name: CatFill: AI Form Autofill
-- Version: 0.3.4
+- Version: 0.3.5
 - Category: Productivity
 - Single purpose: Save user-approved form information locally and fill similar web forms on the user's command.
 - Privacy policy URL: Publish `PRIVACY.md` at a public HTTPS URL before submission. Replace this line with that final URL.
@@ -31,6 +31,7 @@ CatFill 不要求账号，不运行开发者服务器。AI 功能完全可选，
 - `activeTab`: Access only the tab where the user invokes CatFill to scan or fill a form.
 - `scripting`: Inject the form scanner only after a user action.
 - `sidePanel`: Provide the field-organizing workspace.
+- Optional Glassdoor host access: Requested only after the user clicks Glassdoor, to resolve a company name to its public employer ID and overview page.
 - AI host permissions: Send requests only to the AI provider endpoints selected and configured by the user.
 
 ## Privacy Practices Disclosure Draft

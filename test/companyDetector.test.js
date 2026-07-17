@@ -63,3 +63,23 @@ test("builds a region-aware search limited to Glassdoor company overview pages",
   const globalUrl = new URL(detector.glassdoorResearchUrl("Experian", "en-US"));
   assert.equal(globalUrl.searchParams.get("q"), 'site:glassdoor.com/Overview/Working-at- "Experian"');
 });
+
+test("builds the real Glassdoor overview URL from an employer ID", () => {
+  assert.equal(
+    detector.glassdoorCompanyUrl({ id: 6036, label: "Amazon" }, "en-GB"),
+    "https://www.glassdoor.co.uk/Overview/Working-at-Amazon-EI_IE6036.11,17.htm",
+  );
+  assert.equal(
+    detector.glassdoorCompanyUrl({ id: 42406, label: "Experian" }, "en-US"),
+    "https://www.glassdoor.com/Overview/Working-at-Experian-EI_IE42406.11,19.htm",
+  );
+});
+
+test("only auto-opens an exact Glassdoor company-name match", () => {
+  const candidates = [
+    { id: 6036, label: "Amazon" },
+    { id: 7470741, label: "Amazon Web Services" },
+  ];
+  assert.equal(detector.exactGlassdoorCompany("Amazon", candidates).id, 6036);
+  assert.equal(detector.exactGlassdoorCompany("Amazon UK", candidates), null);
+});

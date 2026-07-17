@@ -272,6 +272,17 @@ select {
 .companyLinks svg { width: 14px; height: 14px; }
 .linkedinBadge { display: grid; width: 14px; height: 14px; place-items: center; color: var(--surface); background: #2867b2; border-radius: 2px; font-size: 9px; font-weight: 850; }
 
+.glassdoorLookup { grid-column: 1 / -1; padding-top: 9px; border-top: 1px solid var(--line); }
+.glassdoorLookupHeader { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.glassdoorLookupHeader strong { font-size: 11px; }
+.glassdoorLookupHeader button { width: 24px; height: 24px; color: var(--muted); background: transparent; border-radius: 6px; font-size: 18px; line-height: 1; }
+.glassdoorLookupHeader button:hover { background: var(--surface-muted); }
+.glassdoorCandidates { display: grid; gap: 5px; margin-top: 7px; }
+.glassdoorCandidate { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; width: 100%; padding: 7px 8px; color: var(--body); background: var(--canvas); border-radius: 7px; box-shadow: inset 0 0 0 1px var(--line); text-align: left; }
+.glassdoorCandidate strong { overflow: hidden; font-size: 11px; text-overflow: ellipsis; white-space: nowrap; }
+.glassdoorCandidate small { color: var(--muted); font-size: 9px; }
+.glassdoorSearchFallback { margin-top: 5px; padding: 6px 8px; color: var(--muted); background: transparent; font-size: 10px; font-weight: 700; }
+
 .resultPanel {
   display: grid;
   grid-template-columns: 30px minmax(0, 1fr);

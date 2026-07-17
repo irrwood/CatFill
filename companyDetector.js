@@ -133,7 +133,30 @@ globalThis.CatFillCompanyDetector = (() => {
     return `https://www.google.com/search?q=${encodeURIComponent(query)}`;
   }
 
-  return { cleanName, atsCandidate, detectFromSignals, detectDocument, glassdoorResearchUrl };
+  function glassdoorCompanyUrl(company, locale = "") {
+    const id = Number(company?.id);
+    const label = cleanName(company?.label || "");
+    if (!Number.isSafeInteger(id) || id <= 0 || !label) return "";
+    const slug = label.replace(/[^\p{L}\p{N}]+/gu, "-").replace(/^-+|-+$/g, "");
+    const region = /^(en-GB|cy-GB)/i.test(locale) ? "glassdoor.co.uk" : "glassdoor.com";
+    return `https://www.${region}/Overview/Working-at-${encodeURIComponent(slug)}-EI_IE${id}.11,${11 + [...slug].length}.htm`;
+  }
+
+  function exactGlassdoorCompany(companyName, candidates = []) {
+    const target = cleanName(companyName).toLocaleLowerCase();
+    if (!target) return null;
+    return candidates.find((candidate) => cleanName(candidate?.label).toLocaleLowerCase() === target) || null;
+  }
+
+  return {
+    cleanName,
+    atsCandidate,
+    detectFromSignals,
+    detectDocument,
+    glassdoorResearchUrl,
+    glassdoorCompanyUrl,
+    exactGlassdoorCompany,
+  };
 })();
 
 if (typeof module !== "undefined") module.exports = globalThis.CatFillCompanyDetector;

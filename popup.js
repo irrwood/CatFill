@@ -7,6 +7,7 @@ const $ = (id) => document.getElementById(id);
 const i18n = globalThis.CatFillI18n;
 let state = { profiles: {}, activeProfileId: null, settings: {} };
 let activityTimer = null;
+let detectedCompany = null;
 
 function renderCompany(company) {
   const panel = $("companyResearch");
@@ -14,10 +15,61 @@ function renderCompany(company) {
     panel.classList.add("hidden");
     return;
   }
+  detectedCompany = company;
   $("detectedCompany").textContent = company.name;
   $("linkedinCompanyLink").href = `https://www.linkedin.com/search/results/companies/?keywords=${encodeURIComponent(company.name)}`;
   $("glassdoorCompanyLink").href = globalThis.CatFillCompanyDetector.glassdoorResearchUrl(company.name, navigator.language);
   panel.classList.remove("hidden");
+}
+
+function openExternal(url) {
+  if (url) chrome.tabs.create({ url });
+}
+
+function renderGlassdoorCandidates(candidates) {
+  const list = $("glassdoorCandidates");
+  list.innerHTML = "";
+  candidates.slice(0, 5).forEach((candidate) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "glassdoorCandidate";
+    const name = document.createElement("strong");
+    name.textContent = candidate.label;
+    const website = document.createElement("small");
+    website.textContent = candidate.website || "Glassdoor";
+    button.append(name, website);
+    button.onclick = () => openExternal(globalThis.CatFillCompanyDetector.glassdoorCompanyUrl(candidate, navigator.language));
+    list.appendChild(button);
+  });
+  $("glassdoorLookup").classList.remove("hidden");
+}
+
+async function openGlassdoorCompany(event) {
+  event.preventDefault();
+  const companyName = detectedCompany?.name;
+  const fallbackUrl = globalThis.CatFillCompanyDetector.glassdoorResearchUrl(companyName, navigator.language);
+  if (!companyName) return;
+  try {
+    const origin = "https://www.glassdoor.com/*";
+    const hasPermission = await chrome.permissions.request({ origins: [origin] });
+    if (!hasPermission) {
+      openExternal(fallbackUrl);
+      return;
+    }
+    const endpoint = `https://www.glassdoor.com/api-web/employer/find.htm?autocomplete=true&maxEmployersForAutocomplete=10&term=${encodeURIComponent(companyName)}`;
+    const response = await fetch(endpoint);
+    if (!response.ok) throw new Error(`Glassdoor ${response.status}`);
+    const candidates = await response.json();
+    const exact = globalThis.CatFillCompanyDetector.exactGlassdoorCompany(companyName, candidates);
+    if (exact) {
+      openExternal(globalThis.CatFillCompanyDetector.glassdoorCompanyUrl(exact, navigator.language));
+      return;
+    }
+    if (candidates.length) renderGlassdoorCandidates(candidates);
+    else openExternal(fallbackUrl);
+  } catch {
+    openExternal(fallbackUrl);
+  }
 }
 
 function setStatus(text, isErr = false, detail = "") {
@@ -334,6 +386,11 @@ async function openSidePanel(targetTab = "organizerPanel") {
 $("openSidePanelBtn").onclick = () => openSidePanel("organizerPanel");
 $("settingsBtn").onclick = () => openSidePanel("settingsPanel");
 $("emptyImportBtn").onclick = () => openSidePanel("manualPanel");
+$("glassdoorCompanyLink").onclick = openGlassdoorCompany;
+$("closeGlassdoorLookup").onclick = () => $("glassdoorLookup").classList.add("hidden");
+$("glassdoorSearchFallback").onclick = () => openExternal(
+  globalThis.CatFillCompanyDetector.glassdoorResearchUrl(detectedCompany?.name, navigator.language),
+);
 
 // ---------- 联系人管理 ----------
 $("profileSelect").onchange = async (e) => {

@@ -80,6 +80,14 @@
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4h10v15H7z" /><path d="M10 8h4M10 11h4M10 14h4" /></svg><span>Glassdoor</span>
       </a>
     </div>
+    <div id="glassdoorLookup" class="glassdoorLookup hidden">
+      <div class="glassdoorLookupHeader">
+        <strong data-i18n="chooseGlassdoorCompany">选择正确的 Glassdoor 公司</strong>
+        <button id="closeGlassdoorLookup" type="button" data-i18n-title="close">×</button>
+      </div>
+      <div id="glassdoorCandidates" class="glassdoorCandidates"></div>
+      <button id="glassdoorSearchFallback" class="glassdoorSearchFallback" type="button" data-i18n="searchAllGlassdoor">查看全部搜索结果</button>
+    </div>
   </section>
 
   <section id="status" class="resultPanel hidden" aria-live="polite">
