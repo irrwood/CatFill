@@ -16,7 +16,7 @@ function renderCompany(company) {
   }
   $("detectedCompany").textContent = company.name;
   $("linkedinCompanyLink").href = `https://www.linkedin.com/search/results/companies/?keywords=${encodeURIComponent(company.name)}`;
-  $("glassdoorCompanyLink").href = `https://www.glassdoor.com/Search/results.htm?keyword=${encodeURIComponent(company.name)}`;
+  $("glassdoorCompanyLink").href = globalThis.CatFillCompanyDetector.glassdoorResearchUrl(company.name, navigator.language);
   panel.classList.remove("hidden");
 }
 

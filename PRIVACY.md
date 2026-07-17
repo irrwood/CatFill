@@ -18,7 +18,7 @@ CatFill does not operate a developer-controlled server and does not transmit thi
 
 When the user explicitly clicks a CatFill action, the extension may read visible, fillable form fields and their labels, placeholders, options, and related instructions from the active tab. It does not read password fields. This information is used only to save a profile, match local data, or perform the user-requested fill action.
 
-When the popup is opened on a recruitment page, CatFill may also read the page title, recruitment-page URL, site name, and published `JobPosting` organization data to identify the hiring company locally. This information is not uploaded. LinkedIn and Glassdoor are opened only when the user clicks one of the company research links.
+When the popup is opened on a recruitment page, CatFill may also read the page title, recruitment-page URL, site name, and published `JobPosting` organization data to identify the hiring company locally. This information is not uploaded. LinkedIn company search or a Google search restricted to Glassdoor company overview pages is opened only when the user clicks the corresponding research link; the detected company name is included in that search URL.
 
 ## Optional AI Features
 

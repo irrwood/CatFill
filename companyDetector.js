@@ -125,7 +125,15 @@ globalThis.CatFillCompanyDetector = (() => {
     });
   }
 
-  return { cleanName, atsCandidate, detectFromSignals, detectDocument };
+  function glassdoorResearchUrl(companyName, locale = "") {
+    const name = cleanName(companyName);
+    if (!name) return "";
+    const region = /^(en-GB|cy-GB)/i.test(locale) ? "glassdoor.co.uk" : "glassdoor.com";
+    const query = `site:${region}/Overview/Working-at- "${name}"`;
+    return `https://www.google.com/search?q=${encodeURIComponent(query)}`;
+  }
+
+  return { cleanName, atsCandidate, detectFromSignals, detectDocument, glassdoorResearchUrl };
 })();
 
 if (typeof module !== "undefined") module.exports = globalThis.CatFillCompanyDetector;

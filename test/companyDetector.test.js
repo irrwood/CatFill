@@ -54,3 +54,12 @@ test("uses a branded page title as a medium-confidence fallback", () => {
   assert.equal(result.name, "Example Robotics");
   assert.equal(result.confidence, "medium");
 });
+
+test("builds a region-aware search limited to Glassdoor company overview pages", () => {
+  const url = new URL(detector.glassdoorResearchUrl("Amazon", "en-GB"));
+  assert.equal(url.hostname, "www.google.com");
+  assert.equal(url.searchParams.get("q"), 'site:glassdoor.co.uk/Overview/Working-at- "Amazon"');
+
+  const globalUrl = new URL(detector.glassdoorResearchUrl("Experian", "en-US"));
+  assert.equal(globalUrl.searchParams.get("q"), 'site:glassdoor.com/Overview/Working-at- "Experian"');
+});
