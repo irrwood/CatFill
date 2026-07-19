@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CatFill sign in</title>
+  <style>
+    :root { color-scheme: light dark; font-family: Inter, system-ui, sans-serif; }
+    body { min-height: 100vh; margin: 0; display: grid; place-items: center; background: #f7f6f4; color: #222; }
+    main { width: min(420px, calc(100% - 32px)); padding: 28px; background: white; border: 1px solid #e7e2dc; border-radius: 8px; }
+    h1 { margin: 0 0 8px; font-size: 24px; }
+    p { margin: 0; color: #666; line-height: 1.5; }
+    a { display: inline-flex; margin-top: 20px; padding: 10px 14px; color: white; background: #222; border-radius: 7px; font-weight: 650; text-decoration: none; }
+    @media (prefers-color-scheme: dark) {
+      body { background: #171615; color: #f4f0ea; }
+      main { background: #211f1d; border-color: #403a35; }
+      p { color: #bbb2a8; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>CatFill</h1>
+    <p id="status">Finishing sign in... / 正在完成登录...</p>
+  </main>
+  <script>
+    (() => {
+      const allowedIds = new Set([
+        "mabcbcambejmggeflpbldjhhofikfbmh",
+        "dgkinncnpdfmfmhkgljkocnefdgohmgp",
+      ]);
+      const extensionId = location.pathname.split("/").filter(Boolean).at(-1) || "";
+      const values = new URLSearchParams(location.hash.slice(1));
+      const status = document.getElementById("status");
+      if (!allowedIds.has(extensionId) || !values.has("access_token") || !values.has("refresh_token")) {
+        status.textContent = "This sign-in link is invalid or expired. / 登录链接无效或已过期。";
+        return;
+      }
+
+      const destination = `chrome-extension://${extensionId}/auth.html${location.hash}`;
+      const link = document.createElement("a");
+      link.href = destination;
+      link.textContent = "Open CatFill / 打开 CatFill";
+      document.querySelector("main").append(link);
+      const session = {
+        access_token: values.get("access_token"),
+        refresh_token: values.get("refresh_token"),
+        expires_in: Number(values.get("expires_in") || 3600),
+        token_type: values.get("token_type") || "bearer",
+      };
+      const showFallback = () => {
+        status.textContent = "CatFill could not be opened automatically. Make sure the extension is enabled, then use the button below. / 无法自动打开 CatFill，请确认扩展已启用，然后点击下方按钮。";
+      };
+      status.textContent = "Connecting to CatFill... / 正在连接 CatFill...";
+      try {
+        chrome.runtime.sendMessage(extensionId, { type: "CATFILL_AUTH_SESSION", session }, (response) => {
+          if (chrome.runtime.lastError || !response?.ok) {
+            showFallback();
+            return;
+          }
+          history.replaceState(null, "", location.pathname);
+          status.textContent = "Signed in. You can close this tab and return to CatFill. / 登录成功，可以关闭此页面并返回 CatFill。";
+          link.remove();
+        });
+      } catch (_error) {
+        showFallback();
+      }
+    })();
+  </script>
+</body>
+</html>
